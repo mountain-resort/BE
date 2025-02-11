@@ -14,39 +14,39 @@ datasource db {
 }
 
 model Member {
-  id           Int       @id @default(autoincrement())
-  firstName    String // 이름
-  lastName     String // 성
-  email        String    @unique // 이메일
-  password     String
-  mobile       String    @unique // 휴대폰번호
-  refreshToken String? // 리프레시 토큰
-  mileage      Int       @default(20) // 마일리지
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  review       Review[] // 리뷰
-  booking      Booking[] // 예약
-  payment      Payment[] // 결제
+  id                Int       @id @default(autoincrement())
+  firstName         String // 이름
+  lastName          String // 성
+  email             String    @unique // 이메일
+  encryptedPassword String
+  mobile            String    @unique // 휴대폰번호
+  refreshToken      String? // 리프레시 토큰
+  mileage           Int       @default(20) // 마일리지
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  review            Review[] // 리뷰
+  booking           Booking[] // 예약
+  payment           Payment[] // 결제
 }
 
 model Admin {
-  id           Int            @id @default(autoincrement())
-  firstName    String // 이름
-  lastName     String // 성
-  email        String         @unique
-  password     String
-  mobile       String         @unique // 휴대폰번호
-  refreshToken String? // 리프레시 토큰
-  authority    Authority      @default(NORMAL) // 권한
-  createdAt    DateTime       @default(now()) // 생성일
-  updatedAt    DateTime       @updatedAt
-  category     Category[] // 카테고리  
-  notification Notification[] // 공지사항
-  faq          Faq[] // 자주묻는질문
+  id                Int            @id @default(autoincrement())
+  firstName         String // 이름
+  lastName          String // 성
+  email             String         @unique
+  encryptedPassword String
+  mobile            String         @unique // 휴대폰번호
+  refreshToken      String? // 리프레시 토큰
+  authority         Authority      @default(NORMAL) // 권한
+  createdAt         DateTime       @default(now()) // 생성일
+  updatedAt         DateTime       @updatedAt
+  category          Category[] // 카테고리  
+  announcement      Announcement[] // 공지사항
+  faq               Faq[] // 자주묻는질문
 }
 
 enum Authority {
-  MASTER
+  MANAGER
   NORMAL
 }
 
@@ -63,8 +63,8 @@ model Package {
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
-  event    Event[] // 포함된 이벤트
-  activity Activity[] // 포함된 활동
+  events     Event[] // 포함된 이벤트
+  activities Activity[] // 포함된 활동
 }
 
 model Event {
@@ -78,15 +78,15 @@ model Event {
   imageUrl         String
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
-  booking          Booking[]
-  package          Package[]
+  bookings         Booking[]
+  packages         Package[]
 }
 
 model Dining {
   id           Int      @id @default(autoincrement())
   name         String // 식당명
   description  String // 식당설명
-  tradingHours Int // 영업시간
+  tradingHours String // 영업시간
   content      String // 식당소개
   location     String // 식당위치
   menuUrl      String // 메뉴 PDF URL
@@ -96,59 +96,50 @@ model Dining {
 }
 
 model Category {
-  id            Int        @id @default(autoincrement())
-  name          String // 카테고리명
-  description   String // 카테고리설명
-  imageUrl      String
-  createAdmin   Admin      @relation(fields: [createAdminId], references: [id])
-  createAdminId Int //생성 관리자
-  activity      Activity[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id          Int        @id @default(autoincrement())
+  name        String // 카테고리명
+  description String // 카테고리설명
+  imageUrl    String
+  createdBy   Admin      @relation(fields: [adminId], references: [id])
+  adminId     Int //생성 관리자
+  activities  Activity[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Activity {
   id          Int       @id @default(autoincrement())
-  title       String
+  name        String
   description String
   imageUrl    String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   category    Category  @relation(fields: [categoryId], references: [id])
   categoryId  Int
-  booking     Booking[]
-  package     Package[]
+  bookings    Booking[]
+  packages    Package[]
 }
 
-model Notification {
-  id            Int      @id @default(autoincrement())
-  title         String // 공지사항제목
-  content       String // 공지사항내용
-  fileUrl       String? // 첨부파일URL
-  imageUrl      String? // 이미지URL
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createAdmin   Admin    @relation(fields: [createAdminId], references: [id])
-  createAdminId Int // 생성 관리자
-}
-
-model Inquiry {
+model Announcement {
   id        Int      @id @default(autoincrement())
-  question  String // 질문
-  name      String // 이름
-  email     String // 이메일
+  title     String // 공지사항제목
+  content   String // 공지사항내용
+  fileUrl   String? // 첨부파일URL
+  imageUrl  String? // 이미지URL
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  createdBy Admin    @relation(fields: [adminId], references: [id])
+  adminId   Int // 생성 관리자
 }
 
 model Faq {
-  id            Int      @id @default(autoincrement())
-  question      String // 질문
-  answer        String // 답변
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createAdmin   Admin    @relation(fields: [createAdminId], references: [id])
-  createAdminId Int // 생성 관리자
+  id        Int      @id @default(autoincrement())
+  question  String // 질문
+  answer    String // 답변
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy Admin    @relation(fields: [adminId], references: [id])
+  adminId   Int // 생성 관리자
 }
 
 model Accommodation {
@@ -157,14 +148,14 @@ model Accommodation {
   description String // 숙소설명
   overview    String // 숙소개요
   cost        Int // 가격
-  imageUrl    String // 숙소이미지
+  imageUrls   String[] // 숙소이미지
   roomType    RoomType  @default(CABIN) // 객실유형
   option      String // 옵션
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  room        Room[]
-  booking     Booking[]
-  review      Review[]
+  rooms       Room[]
+  bookings    Booking[]
+  reviews     Review[]
 }
 
 enum RoomType {
@@ -173,15 +164,16 @@ enum RoomType {
 }
 
 model Room {
-  id            Int             @id @default(autoincrement())
-  name          RoomName        @default(STANDARD) // 객실명
-  occupancy     Int // 수용인원
-  size          Int // 객실크기
-  bedding       String[] // 침구
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  amenity       Amenity[]
-  accommodation Accommodation[]
+  id              Int           @id @default(autoincrement())
+  name            RoomName      @default(STANDARD) // 객실명
+  occupancy       Int // 수용인원
+  size            Int // 객실크기
+  bedding         String[] // 침구
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  amenities       Amenity[]
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
+  accommodationId Int
 }
 
 enum RoomName {
@@ -192,22 +184,22 @@ enum RoomName {
 model Amenity {
   id        Int      @id @default(autoincrement())
   name      String // 편의시설명
-  content   String // 편의시설설명
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   room      Room[]
 }
 
 model Review {
-  id              Int            @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   rating          Int // 평점
   comment         String // 리뷰내용
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  member          Member         @relation(fields: [memberId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  isBest          Boolean       @default(false)
+  member          Member        @relation(fields: [memberId], references: [id])
   memberId        Int // 작성자
-  accommodation   Accommodation? @relation(fields: [accommodationId], references: [id])
-  accommodationId Int? // 숙소
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
+  accommodationId Int // 숙소
 }
 
 model Booking {
@@ -221,10 +213,10 @@ model Booking {
   updatedAt       DateTime      @updatedAt
   accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
   accommodationId Int // 숙소
-  member          Member        @relation(fields: [memberId], references: [id])
-  memberId        Int // 작성자
-  activity        Activity[]
-  event           Event[]
+  member          Member?       @relation(fields: [memberId], references: [id])
+  memberId        Int? // 작성자
+  activities      Activity[]
+  events          Event[]
   payment         Payment?
 }
 
