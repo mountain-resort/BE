@@ -22,6 +22,7 @@ model Member {
   mobile            String    @unique // 휴대폰번호
   refreshToken      String? // 리프레시 토큰
   mileage           Int       @default(20) // 마일리지
+  isDeleted         Boolean   @default(false) // 삭제여부
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   review            Review[] // 리뷰
@@ -37,6 +38,7 @@ model Admin {
   encryptedPassword String
   mobile            String         @unique // 휴대폰번호
   refreshToken      String? // 리프레시 토큰
+  isDeleted         Boolean        @default(false) // 삭제여부
   authority         Authority      @default(NORMAL) // 권한
   createdAt         DateTime       @default(now()) // 생성일
   updatedAt         DateTime       @updatedAt
@@ -59,6 +61,7 @@ model Package {
   nights          Int // 숙박일수수
   cost            Int // 가격
   imageUrl        String
+  isDeleted       Boolean    @default(false) // 삭제여부
   inclusions      String[] // 포함한 서비스스
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
@@ -76,6 +79,7 @@ model Event {
   maxGroup         Int // 최대참여팀수
   participantGroup Int        @default(0) // 참여팀수
   imageUrl         String
+  isDeleted        Boolean    @default(false) // 삭제여부
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
   bookings         Booking[]
@@ -91,6 +95,7 @@ model Dining {
   location     String // 식당위치
   menuUrl      String // 메뉴 PDF URL
   imageUrl     String // 식당이미지
+  isDeleted    Boolean  @default(false) // 삭제여부
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -100,6 +105,7 @@ model Category {
   name        String // 카테고리명
   description String // 카테고리설명
   imageUrl    String
+  isDeleted   Boolean    @default(false) // 삭제여부
   createdBy   Admin      @relation(fields: [adminId], references: [id])
   adminId     Int //생성 관리자
   activities  Activity[]
@@ -112,6 +118,7 @@ model Activity {
   name        String
   description String
   imageUrl    String
+  isDeleted   Boolean   @default(false) // 삭제여부
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   category    Category  @relation(fields: [categoryId], references: [id])
@@ -126,6 +133,7 @@ model Announcement {
   content   String // 공지사항내용
   fileUrl   String? // 첨부파일URL
   imageUrl  String? // 이미지URL
+  isDeleted Boolean  @default(false) // 삭제여부
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy Admin    @relation(fields: [adminId], references: [id])
@@ -136,6 +144,7 @@ model Faq {
   id        Int      @id @default(autoincrement())
   question  String // 질문
   answer    String // 답변
+  isDeleted Boolean  @default(false) // 삭제여부
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy Admin    @relation(fields: [adminId], references: [id])
@@ -151,6 +160,7 @@ model Accommodation {
   imageUrls   String[] // 숙소이미지
   roomType    RoomType  @default(CABIN) // 객실유형
   option      String // 옵션
+  isDeleted   Boolean   @default(false) // 삭제여부
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   rooms       Room[]
@@ -169,6 +179,7 @@ model Room {
   occupancy       Int // 수용인원
   size            Int // 객실크기
   bedding         String[] // 침구
+  isDeleted       Boolean       @default(false) // 삭제여부
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   amenities       Amenity[]
@@ -184,6 +195,7 @@ enum RoomName {
 model Amenity {
   id        Int      @id @default(autoincrement())
   name      String // 편의시설명
+  isDeleted Boolean  @default(false) // 삭제여부
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   room      Room[]
@@ -193,6 +205,7 @@ model Review {
   id              Int           @id @default(autoincrement())
   rating          Int // 평점
   comment         String // 리뷰내용
+  isDeleted       Boolean       @default(false) // 삭제여부
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   isBest          Boolean       @default(false)
