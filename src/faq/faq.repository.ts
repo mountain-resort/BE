@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prismaClient';
 import { CreateFaqDto } from './dto/create.faq.dto';
 import { UpdateFaqDto } from './dto/update.faq.dto';
-import { OrderByQueryDto } from './dto/orderBy.dto';
+import { OrderByQueryDto } from '../common/dto/orderBy.dto';
 @Injectable()
 export class FaqRepository {
   constructor(private readonly prismaClient: PrismaService) {}
