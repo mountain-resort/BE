@@ -2,7 +2,7 @@
 name: "pull-request template"
 about: "PR 내용써주세요."
 title: "[이름] 구현한 기능"
-labels: ✨feature
+labels: ["✨feature"]
 assignees: ""
 ---
 
