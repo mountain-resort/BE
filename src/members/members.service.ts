@@ -76,14 +76,18 @@ export class MembersService {
   }
 
   async createMember(member: CreateMemberDto) {
-    const encryptedPassword: string = await bcrypt.hash(
-      member.encryptedPassword,
-      10,
+    const checkEmail = await this.membersRepository.getMemberByEmail(
+      member.email,
     );
+    if (checkEmail) {
+      throw new UnprocessableEntityException('Email already exists');
+    }
 
+    const { password, ...rest } = member;
+    const hashedPassword: string = await bcrypt.hash(password, 10);
     const newMember = await this.membersRepository.createMember({
-      ...member,
-      encryptedPassword,
+      ...rest,
+      encryptedPassword: hashedPassword,
     });
 
     return newMember;
@@ -119,6 +123,13 @@ export class MembersService {
       // 데이터베이스에서 오류 발생 시 예외 발생
       throw new BadRequestException('Failed to update member');
     }
+  }
+
+  async updateMemberRefreshToken(memberId: number, refreshToken: string) {
+    const updatedMember = await this.membersRepository.updateMember(memberId, {
+      refreshToken,
+    });
+    return updatedMember;
   }
 
   async deleteMember(memberId: number) {

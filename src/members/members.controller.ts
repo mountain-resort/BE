@@ -10,6 +10,7 @@ import {
   Res,
   Patch,
   UnauthorizedException,
+  UsePipes,
 } from '@nestjs/common';
 import {
   cookieOptions,
@@ -25,7 +26,7 @@ import createMemberToken from '../common/utils/create.member.token';
 import { Response } from 'express';
 import { SignInDto } from './dto/signin';
 import { TokenPayloadDto } from 'src/common/dto/tokenPayload';
-
+import { CreateMemberPipe } from './pipes/create.member';
 @Controller('members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
@@ -57,11 +58,14 @@ export class MembersController {
   }
 
   @Post('sign-up')
-  async signUp(@Body() createMemberDto: CreateMemberDto, @Res() res: Response) {
-    const member = await this.membersService.createMember(createMemberDto);
+  @UsePipes(CreateMemberPipe)
+  async signUp(@Body() data: CreateMemberDto, @Res() res: Response) {
+    const member = await this.membersService.createMember(data);
 
     const access_token = createMemberToken(member, 'access');
     const refresh_token = createMemberToken(member, 'refresh');
+
+    this.membersService.updateMemberRefreshToken(member.id, refresh_token);
 
     res.cookie('access_token', access_token, cookieOptions);
     res.cookie('refresh_token', refresh_token, refreshCookieOptions);

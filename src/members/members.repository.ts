@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prismaClient';
 import { WhereCondition } from './dto/whereCondition';
-import { CreateMemberDto } from './dto/create.member';
-import { UpdateMemberDto } from './dto/update.member';
+import { Prisma } from '@prisma/client';
 @Injectable()
 export class MembersRepository {
   constructor(private readonly prismaClient: PrismaService) {}
@@ -60,9 +59,9 @@ export class MembersRepository {
     });
   }
 
-  createMember(member: CreateMemberDto) {
+  createMember(data: Prisma.MemberCreateInput) {
     return this.prismaClient.member.create({
-      data: member,
+      data,
       select: {
         id: true,
         firstName: true,
@@ -74,10 +73,10 @@ export class MembersRepository {
     });
   }
 
-  updateMember(id: number, member: UpdateMemberDto) {
+  updateMember(id: number, data: Prisma.MemberUpdateInput) {
     return this.prismaClient.member.update({
       where: { id },
-      data: member,
+      data,
       select: {
         id: true,
         firstName: true,
