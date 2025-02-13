@@ -38,6 +38,24 @@ export class MembersRepository {
         mobile: true,
         mileage: true,
         encryptedPassword: true,
+        note: true,
+        refreshToken: true,
+      },
+    });
+  }
+
+  getMemberByEmail(email: string) {
+    return this.prismaClient.member.findFirst({
+      where: { email },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        mobile: true,
+        mileage: true,
+        encryptedPassword: true,
+        refreshToken: true,
       },
     });
   }

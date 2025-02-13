@@ -4,4 +4,5 @@ export class CreateMemberDto {
   email: string;
   mobile: string;
   encryptedPassword: string;
+  note?: string;
 }
