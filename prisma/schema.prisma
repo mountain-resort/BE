@@ -21,6 +21,7 @@ model Member {
   encryptedPassword String
   mobile            String    @unique // 휴대폰번호
   refreshToken      String? // 리프레시 토큰
+  note              String? // 비고
   mileage           Int       @default(20) // 마일리지
   isDeleted         Boolean   @default(false) // 삭제여부
   createdAt         DateTime  @default(now())
