@@ -29,10 +29,21 @@ export class FaqService {
   }
 
   private setQueryString(sortBy: string, orderBy: string) {
-    return {
-      orderBy: {
-        [sortBy]: orderBy,
-      },
-    };
+    switch (sortBy) {
+      case 'author':
+        return {
+          orderBy: {
+            admin: {
+              firstName: orderBy,
+            },
+          },
+        };
+      default:
+        return {
+          orderBy: {
+            createdAt: orderBy,
+          },
+        };
+    }
   }
 }

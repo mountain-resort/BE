@@ -4,6 +4,7 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from 'src/common/filters/httpException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,8 +14,11 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true,
-      whitelist: true,
+      transform: true, // 요청 데이터를 클래스 인스턴스로 자동 변환
+      whitelist: true, // 데코레이터가 없는 속성은 제거
+      transformOptions: {
+        enableImplicitConversion: true, // 문자열을 숫자로 자동 변환
+      },
     }),
   );
 
@@ -37,6 +41,7 @@ async function bootstrap() {
 
   app.enableCors(corsOptions);
   app.use(cookieParser());
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(process.env.PORT ?? 3000, () => {
     console.log(`Server is running on port ${process.env.PORT ?? 3000}`);
   });
