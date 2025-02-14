@@ -22,6 +22,7 @@ model Member {
   mobile            String    @unique // 휴대폰번호
   refreshToken      String? // 리프레시 토큰
   note              String? // 비고
+  isOAuth           Boolean   @default(false)
   mileage           Int       @default(20) // 마일리지
   isDeleted         Boolean   @default(false) // 삭제여부
   createdAt         DateTime  @default(now())
@@ -243,4 +244,34 @@ model Payment {
   memberId  Int // 이용고객객
   booking   Booking  @relation(fields: [bookingId], references: [id])
   bookingId Int      @unique
+}
+
+model Translation {
+  id         Int        @id @default(autoincrement())
+  entityId   Int // 번역 대상 엔티티 ID (예: Package ID)
+  entityType EntityType // "package" 등
+  field      String // 번역 대상 필드명 (예: "name", "description")
+  language   String // 번역 언어 (예: "ko", "fr")
+  value      String // 번역된 텍스트
+
+  @@unique([entityId, entityType, field, language]) // 중복 방지
+  @@index([entityId, entityType])
+  @@index([language])
+}
+
+enum EntityType {
+  PACKAGE
+  EVENT
+  ACCOMMODATION
+  BOOKING
+  ACTIVITY
+  ANNOUNCEMENT
+  CATEGORY
+  DINING
+  FAQ
+  REVIEW
+  ROOM
+  AMENITY
+  ADMIN
+  MEMBER
 }
