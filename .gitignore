@@ -64,4 +64,4 @@ Dockerfile
 .dockerignore
 
 #prisma
-migrations
+/prisma/migrations
