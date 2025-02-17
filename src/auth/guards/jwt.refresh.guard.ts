@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { MembersService } from 'src/members/members.service';
 import * as jwt from 'jsonwebtoken';
-import { env } from '../configs/env';
-import { TokenPayloadDto } from '../dto/tokenPayload';
+import { env } from 'src/common/configs/env';
+import { TokenPayloadDto } from 'src/common/dto/tokenPayload';
 
 @Injectable()
 export class JwtRefreshGuard implements CanActivate {
