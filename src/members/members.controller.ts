@@ -26,7 +26,7 @@ import createMemberToken from '../common/utils/create.member.token';
 import { Response } from 'express';
 import { SignInDto } from './dto/signin';
 import { TokenPayloadDto } from 'src/common/dto/tokenPayload';
-
+import { CreateMemberPipe } from './pipes/create.member';
 @Controller('members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
@@ -58,6 +58,7 @@ export class MembersController {
   }
 
   @Post('sign-up')
+  @UsePipes(CreateMemberPipe)
   async signUp(@Body() data: CreateMemberDto, @Res() res: Response) {
     const member = await this.membersService.createMember(data);
 
@@ -88,13 +89,18 @@ export class MembersController {
 
   @Post('password/check')
   @UseGuards(AuthGuard('jwt'))
-  async checkPassword(@User() user: TokenPayloadDto, @Body() password: string) {
+  async checkPassword(
+    @User() user: TokenPayloadDto,
+    @Body() data: { password: string },
+    @Res() res: Response,
+  ) {
     const memberId = user.id;
+    const { password } = data;
     const isPasswordCorrect = await this.membersService.checkPassword(
       memberId,
       password,
     );
-    return isPasswordCorrect;
+    return res.status(200).send({ isConfirmed: isPasswordCorrect });
   }
 
   @Patch('me')
@@ -122,5 +128,12 @@ export class MembersController {
       updateMemberDto,
     );
     return member;
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  async deleteMember(@Param('id') memberId: number, @Res() res: Response) {
+    await this.membersService.deleteMember(memberId);
+    res.status(204).send();
   }
 }

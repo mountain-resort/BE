@@ -35,7 +35,7 @@ export class MembersService {
       hasNext,
       totalPage,
       currentPage,
-      List: memberList,
+      list: memberList,
     };
   }
 
@@ -61,6 +61,8 @@ export class MembersService {
       password,
       member.encryptedPassword,
     );
+
+    console.log(isPasswordCorrect);
 
     return isPasswordCorrect;
   }
@@ -99,6 +101,10 @@ export class MembersService {
       throw new NotFoundException('Member not found');
     }
 
+    if (member.isDeleted) {
+      throw new UnprocessableEntityException('Member is deleted');
+    }
+
     const isPasswordCorrect: boolean = await bcrypt.compare(
       password,
       member.encryptedPassword,
@@ -114,9 +120,11 @@ export class MembersService {
 
   async updateMember(memberId: number, member: UpdateMemberDto) {
     try {
+      const { password, ...rest } = member;
+      const hashedPassword: string = await bcrypt.hash(password, 10);
       const updatedMember = await this.membersRepository.updateMember(
         memberId,
-        member,
+        { ...rest, encryptedPassword: hashedPassword },
       );
       return updatedMember;
     } catch (error) {
@@ -149,7 +157,7 @@ export class MembersService {
       { note: { contains: keyword } },
     ];
 
-    if (isDeleted === 'null') {
+    if (isDeleted === null || isDeleted === 'null') {
       return {
         OR,
       };

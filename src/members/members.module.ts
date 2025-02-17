@@ -3,7 +3,6 @@ import { MembersService } from './members.service';
 import { MembersController } from './members.controller';
 import { MembersRepository } from './members.repository';
 import { CommonModule } from 'src/common/common.module';
-
 @Module({
   imports: [CommonModule],
   controllers: [MembersController],
