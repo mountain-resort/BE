@@ -5,9 +5,9 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { MembersRepository } from './members.repository';
-import { CreateMemberDto } from './dto/create.member';
-import { UpdateMemberDto } from './dto/update.member';
-import { WhereCondition } from './dto/whereCondition';
+import { CreateMemberDto } from './dto/create-member.dto';
+import { UpdateMemberDto } from './dto/update-member.dto';
+import { WhereCondition } from './dto/whereCondition.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

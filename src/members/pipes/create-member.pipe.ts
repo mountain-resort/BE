@@ -1,5 +1,5 @@
 import { PipeTransform, BadRequestException } from '@nestjs/common';
-import { CreateMemberDto } from '../dto/create.member';
+import { CreateMemberDto } from '../dto/create-member.dto';
 
 export class CreateMemberPipe implements PipeTransform {
   transform(value: any) {

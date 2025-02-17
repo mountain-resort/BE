@@ -8,7 +8,7 @@ import {
 import { MembersService } from 'src/members/members.service';
 import * as jwt from 'jsonwebtoken';
 import { env } from 'src/common/configs/env';
-import { TokenPayloadDto } from 'src/common/dto/tokenPayload';
+import { TokenPayloadDto } from 'src/common/dto/tokenPayload.dto';
 
 @Injectable()
 export class JwtRefreshGuard implements CanActivate {
