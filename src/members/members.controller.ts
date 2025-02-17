@@ -26,7 +26,7 @@ import createMemberToken from '../common/utils/create.member.token';
 import { Response } from 'express';
 import { SignInDto } from './dto/signin';
 import { TokenPayloadDto } from 'src/common/dto/tokenPayload';
-import { CreateMemberPipe } from './pipes/create.member';
+
 @Controller('members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
@@ -58,7 +58,6 @@ export class MembersController {
   }
 
   @Post('sign-up')
-  @UsePipes(CreateMemberPipe)
   async signUp(@Body() data: CreateMemberDto, @Res() res: Response) {
     const member = await this.membersService.createMember(data);
 
@@ -74,8 +73,8 @@ export class MembersController {
   }
 
   @Post('sign-in')
-  async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
-    const { email, password } = signInDto;
+  async signIn(@Body() data: SignInDto, @Res() res: Response) {
+    const { email, password } = data;
     const member = await this.membersService.signIn(email, password);
 
     const access_token = createMemberToken(member, 'access');
