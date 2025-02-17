@@ -3,10 +3,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { env } from 'src/common/configs/env';
-import { TokenPayloadDto } from '../dto/tokenPayload';
+import { TokenPayloadDto } from '../../common/dto/tokenPayload';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtOptionalStrategy extends PassportStrategy(
+  Strategy,
+  'optional',
+) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -23,16 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: any) {
-    if (!payload || !payload.id) {
-      throw new UnauthorizedException('Invalid token payload');
-    }
-
-    const user: TokenPayloadDto = {
-      id: payload.id,
-      email: payload.email,
-    };
-
-    return user;
+  async validate(payload: TokenPayloadDto | null) {
+    return payload ? payload : null;
   }
 }

@@ -22,11 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     console.log({
       path: request.path,
       method: request.method,
-      error: {
-        name: exception.name,
-        message: exception.message,
-        statusCode: status,
-      },
+      error: exception,
       date: new Date(),
     });
 

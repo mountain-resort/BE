@@ -74,8 +74,8 @@ export class MembersController {
   }
 
   @Post('sign-in')
-  async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
-    const { email, password } = signInDto;
+  async signIn(@Body() data: SignInDto, @Res() res: Response) {
+    const { email, password } = data;
     const member = await this.membersService.signIn(email, password);
 
     const access_token = createMemberToken(member, 'access');
@@ -89,13 +89,18 @@ export class MembersController {
 
   @Post('password/check')
   @UseGuards(AuthGuard('jwt'))
-  async checkPassword(@User() user: TokenPayloadDto, @Body() password: string) {
+  async checkPassword(
+    @User() user: TokenPayloadDto,
+    @Body() data: { password: string },
+    @Res() res: Response,
+  ) {
     const memberId = user.id;
+    const { password } = data;
     const isPasswordCorrect = await this.membersService.checkPassword(
       memberId,
       password,
     );
-    return isPasswordCorrect;
+    return res.status(200).send({ isConfirmed: isPasswordCorrect });
   }
 
   @Patch('me')
@@ -123,5 +128,12 @@ export class MembersController {
       updateMemberDto,
     );
     return member;
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  async deleteMember(@Param('id') memberId: number, @Res() res: Response) {
+    await this.membersService.deleteMember(memberId);
+    res.status(204).send();
   }
 }

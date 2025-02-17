@@ -4,22 +4,11 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { FaqModule } from './faq/faq.module';
 import { MembersModule } from './members/members.module';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { env } from './common/configs/env';
-
+import { JwtStrategy } from './auth/strategyies/jwt.strategy';
+import { AuthModule } from './auth/auth.module';
 @Module({
-  imports: [
-    CommonModule,
-    FaqModule,
-    MembersModule,
-    PassportModule,
-    JwtModule.register({
-      secret: env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
-    }),
-  ],
+  imports: [CommonModule, FaqModule, MembersModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

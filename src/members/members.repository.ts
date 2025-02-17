@@ -37,7 +37,6 @@ export class MembersRepository {
         mobile: true,
         mileage: true,
         encryptedPassword: true,
-        note: true,
         refreshToken: true,
       },
     });
@@ -55,6 +54,7 @@ export class MembersRepository {
         mileage: true,
         encryptedPassword: true,
         refreshToken: true,
+        isDeleted: true,
       },
     });
   }
