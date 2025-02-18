@@ -62,8 +62,6 @@ export class MembersService {
       member.encryptedPassword,
     );
 
-    console.log(isPasswordCorrect);
-
     return isPasswordCorrect;
   }
 
