@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { MembersModule } from 'src/members/members.module';
 import { JwtStrategy } from './strategyies/jwt.strategy';
-import { JwtRefreshStrategy } from './strategyies/jwt.refresh';
+import { JwtRefreshStrategy } from './strategyies/jwt.refresh.strategy';
 import { JwtOptionalStrategy } from './strategyies/jwt.optional.strategy';
 import { env } from 'src/common/configs/env';
 
