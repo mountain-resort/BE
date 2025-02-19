@@ -17,15 +17,15 @@ import {
   refreshCookieOptions,
 } from '../common/configs/cookieOptions';
 import { MembersService } from './members.service';
-import { QueryStringDto } from './dto/queryString.dto';
-import { User } from 'src/common/decorators/user.decorator';
+import { QueryStringDto } from './dto/query-string.dto';
+import { User } from 'src/common/decorators/user-decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import createMemberToken from '../common/utils/create.member.token';
+import createMemberToken from '../common/utils/create-member.token';
 import { Response } from 'express';
 import { SignInDto } from './dto/signin.dto';
-import { TokenPayloadDto } from 'src/common/dto/tokenPayload.dto';
+import { TokenPayloadDto } from 'src/common/dto/token-payload.dto';
 import { CreateMemberPipe } from './pipes/create-member.pipe';
 @Controller('members')
 export class MembersController {

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { env } from 'src/common/configs/env';
-import { TokenPayloadDto } from 'src/common/dto/tokenPayload.dto';
+import { TokenPayloadDto } from 'src/common/dto/token-payload.dto';
 import { AdminsService } from 'src/admins/admins.service';
 
 @Injectable()

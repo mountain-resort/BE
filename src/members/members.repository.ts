@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/common/prismaClient';
+import { PrismaService } from 'src/common/prisma-client';
 import { WhereCondition } from './dto/whereCondition.dto';
 import { Prisma } from '@prisma/client';
 @Injectable()
