@@ -15,7 +15,7 @@ import { AdminsService } from './admins.service';
 import { AuthGuard } from '@nestjs/passport';
 import { QueryStringDto } from 'src/members/dto/query-string.dto';
 import { TokenPayloadDto } from 'src/common/dto/token-payload.dto';
-import { User } from 'src/common/decorators/user-decorator';
+import { User } from 'src/common/decorators/user.decorator';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import {
   cookieOptions,

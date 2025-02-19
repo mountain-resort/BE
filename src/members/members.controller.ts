@@ -18,7 +18,7 @@ import {
 } from '../common/configs/cookieOptions';
 import { MembersService } from './members.service';
 import { QueryStringDto } from './dto/query-string.dto';
-import { User } from 'src/common/decorators/user-decorator';
+import { User } from 'src/common/decorators/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
