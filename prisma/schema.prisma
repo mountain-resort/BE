@@ -54,8 +54,8 @@ model Admin {
 }
 
 enum Authority {
-  MANAGER
-  NORMAL
+  MANAGER @map("manager")
+  NORMAL  @map("normal")
 }
 
 model Package {
@@ -178,8 +178,8 @@ model Accommodation {
 }
 
 enum RoomType {
-  CABIN
-  VILLA
+  CABIN @map("cabin")
+  VILLA @map("villa")
 }
 
 model Room {
@@ -197,8 +197,8 @@ model Room {
 }
 
 enum RoomName {
-  DELUXE
-  STANDARD
+  DELUXE   @map("deluxe")
+  STANDARD @map("standard")
 }
 
 model Amenity {
@@ -246,8 +246,8 @@ model Booking {
 
 enum BookingStatus {
   BOOKED   @map("booked")
-  CHECKIN  @map("checkin")
-  CHECKOUT @map("checkout")
+  CHECKIN  @map("check-in")
+  CHECKOUT @map("check-out")
 }
 
 model Payment {
@@ -275,18 +275,18 @@ model Translation {
 }
 
 enum EntityType {
-  PACKAGE
-  EVENT
-  ACCOMMODATION
-  BOOKING
-  ACTIVITY
-  ANNOUNCEMENT
-  CATEGORY
-  DINING
-  FAQ
-  REVIEW
-  ROOM
-  AMENITY
-  ADMIN
-  MEMBER
+  PACKAGE       @map("package")
+  EVENT         @map("event")
+  ACCOMMODATION @map("accommodation")
+  BOOKING       @map("booking")
+  ACTIVITY      @map("activity")
+  ANNOUNCEMENT  @map("announcement")
+  CATEGORY      @map("category")
+  DINING        @map("dining")
+  FAQ           @map("faq")
+  REVIEW        @map("review")
+  ROOM          @map("room")
+  AMENITY       @map("amenity")
+  ADMIN         @map("admin")
+  MEMBER        @map("member")
 }

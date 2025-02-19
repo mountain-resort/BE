@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { AdminsRepository } from './admins.repository';
-import { WhereCondition } from './dto/whereCondition.dto';
+import { WhereCondition } from './dto/where-condition.dto';
 import * as bcrypt from 'bcrypt';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';

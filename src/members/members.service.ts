@@ -7,7 +7,7 @@ import {
 import { MembersRepository } from './members.repository';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { WhereCondition } from './dto/whereCondition.dto';
+import { WhereCondition } from './dto/where-condition.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

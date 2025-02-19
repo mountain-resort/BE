@@ -13,17 +13,17 @@ import {
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { AuthGuard } from '@nestjs/passport';
-import { QueryStringDto } from 'src/members/dto/queryString.dto';
-import { TokenPayloadDto } from 'src/common/dto/tokenPayload.dto';
-import { User } from 'src/common/decorators/user.decorator';
+import { QueryStringDto } from 'src/members/dto/query-string.dto';
+import { TokenPayloadDto } from 'src/common/dto/token-payload.dto';
+import { User } from 'src/common/decorators/user-decorator';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import {
   cookieOptions,
   refreshCookieOptions,
 } from 'src/common/configs/cookieOptions';
-import createAdminToken from 'src/common/utils/create.admin.token';
+import createAdminToken from 'src/common/utils/create-admin.token';
 import { Response } from 'express';
-import { SignInDto } from './dto/signIn.dto';
+import { SignInDto } from './dto/sign-in.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 
 @Controller('admins')
