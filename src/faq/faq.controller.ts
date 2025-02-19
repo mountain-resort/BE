@@ -11,10 +11,10 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { FaqService } from './faq.service';
-import { QueryStringDto } from './dto/queryString.dto';
-import { CreateFaqDto } from './dto/create.faq.dto';
-import { UpdateFaqDto } from './dto/update.faq.dto';
-import { CreateFaqValidationPipe } from './pipes/create.faq.validation.pipe';
+import { QueryStringDto } from './dto/query-string.dto';
+import { CreateFaqDto } from './dto/create-faq.dto';
+import { UpdateFaqDto } from './dto/update-faq.dto';
+import { CreateFaqValidationPipe } from './pipes/create-faq.validation.pipe';
 @Controller('faq')
 export class FaqController {
   constructor(private readonly faqService: FaqService) {}

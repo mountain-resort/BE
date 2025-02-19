@@ -4,7 +4,7 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter } from 'src/common/filters/httpException.filter';
+import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

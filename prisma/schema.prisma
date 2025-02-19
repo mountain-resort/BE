@@ -30,6 +30,8 @@ model Member {
   review            Review[] // 리뷰
   booking           Booking[] // 예약
   payment           Payment[] // 결제
+
+  @@index([isDeleted])
 }
 
 model Admin {
@@ -47,11 +49,13 @@ model Admin {
   category          Category[] // 카테고리  
   announcement      Announcement[] // 공지사항
   faq               Faq[] // 자주묻는질문
+
+  @@index([isDeleted])
 }
 
 enum Authority {
-  MANAGER
-  NORMAL
+  MANAGER @map("manager")
+  NORMAL  @map("normal")
 }
 
 model Package {
@@ -135,11 +139,14 @@ model Announcement {
   content   String // 공지사항내용
   fileUrl   String? // 첨부파일URL
   imageUrl  String? // 이미지URL
+  isTop     Boolean  @default(false) // 상단고정
   isDeleted Boolean  @default(false) // 삭제여부
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy Admin    @relation(fields: [adminId], references: [id])
   adminId   Int // 생성 관리자
+
+  @@index([isTop])
 }
 
 model Faq {
@@ -171,8 +178,8 @@ model Accommodation {
 }
 
 enum RoomType {
-  CABIN
-  VILLA
+  CABIN @map("cabin")
+  VILLA @map("villa")
 }
 
 model Room {
@@ -190,8 +197,8 @@ model Room {
 }
 
 enum RoomName {
-  DELUXE
-  STANDARD
+  DELUXE   @map("deluxe")
+  STANDARD @map("standard")
 }
 
 model Amenity {
@@ -222,7 +229,9 @@ model Booking {
   referenceNumber String        @unique // 예약번호
   name            String // 예약자명
   email           String // 예약자이메일
-  date            DateTime[] // 이용날짜
+  checkIn         DateTime // 체크인
+  checkOut        DateTime // 체크아웃
+  bookingStatus   BookingStatus @default(BOOKED) // 예약상태
   mileage         Int // 마일리지
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -233,6 +242,12 @@ model Booking {
   activities      Activity[]
   events          Event[]
   payment         Payment?
+}
+
+enum BookingStatus {
+  BOOKED   @map("booked")
+  CHECKIN  @map("check-in")
+  CHECKOUT @map("check-out")
 }
 
 model Payment {
@@ -260,18 +275,18 @@ model Translation {
 }
 
 enum EntityType {
-  PACKAGE
-  EVENT
-  ACCOMMODATION
-  BOOKING
-  ACTIVITY
-  ANNOUNCEMENT
-  CATEGORY
-  DINING
-  FAQ
-  REVIEW
-  ROOM
-  AMENITY
-  ADMIN
-  MEMBER
+  PACKAGE       @map("package")
+  EVENT         @map("event")
+  ACCOMMODATION @map("accommodation")
+  BOOKING       @map("booking")
+  ACTIVITY      @map("activity")
+  ANNOUNCEMENT  @map("announcement")
+  CATEGORY      @map("category")
+  DINING        @map("dining")
+  FAQ           @map("faq")
+  REVIEW        @map("review")
+  ROOM          @map("room")
+  AMENITY       @map("amenity")
+  ADMIN         @map("admin")
+  MEMBER        @map("member")
 }
