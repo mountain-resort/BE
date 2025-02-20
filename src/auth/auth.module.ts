@@ -8,7 +8,7 @@ import { JwtStrategy } from './strategyies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategyies/jwt-refresh.strategy';
 import { JwtOptionalStrategy } from './strategyies/jwt-optional.strategy';
 import { env } from 'src/common/configs/env';
-
+import { JwtAdminStrategy } from './strategyies/jwt-admin.strategy';
 @Module({
   imports: [
     MembersModule,
@@ -24,6 +24,7 @@ import { env } from 'src/common/configs/env';
     JwtStrategy,
     JwtRefreshStrategy,
     JwtOptionalStrategy,
+    JwtAdminStrategy,
   ],
   exports: [AuthService],
 })

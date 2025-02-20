@@ -22,6 +22,7 @@ export class AdminsRepository {
         email: true,
         isDeleted: true,
         authority: true,
+        mobile: true,
       },
     });
   }
@@ -38,6 +39,7 @@ export class AdminsRepository {
         isDeleted: true,
         authority: true,
         refreshToken: true,
+        mobile: true,
       },
     });
   }
@@ -54,6 +56,7 @@ export class AdminsRepository {
         isDeleted: true,
         authority: true,
         refreshToken: true,
+        mobile: true,
       },
     });
   }
@@ -68,6 +71,7 @@ export class AdminsRepository {
         email: true,
         isDeleted: true,
         authority: true,
+        mobile: true,
       },
     });
   }
@@ -83,7 +87,7 @@ export class AdminsRepository {
         email: true,
         isDeleted: true,
         authority: true,
-        refreshToken: true,
+        mobile: true,
       },
     });
   }

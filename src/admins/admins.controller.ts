@@ -48,7 +48,7 @@ export class AdminsController {
   }
 
   @Get('me')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async getAdmin(@User() user: TokenPayloadDto) {
     const adminId = user.id;
     const admin = await this.adminsService.getAdminById(adminId);
@@ -85,7 +85,7 @@ export class AdminsController {
   }
 
   @Post('password/check')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async checkPassword(
     @User() user: TokenPayloadDto,
     @Body() data: { password: string },
@@ -101,7 +101,7 @@ export class AdminsController {
   }
 
   @Patch('me')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async updateAdmin(
     @User() user: TokenPayloadDto,
     @Body() data: UpdateAdminDto,
@@ -112,7 +112,7 @@ export class AdminsController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async updateAdminById(
     @User() user: TokenPayloadDto,
     @Param('id') adminId: number,
@@ -128,7 +128,7 @@ export class AdminsController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async deleteAdmin(
     @User() user: TokenPayloadDto,
     @Param('id') adminId: number,

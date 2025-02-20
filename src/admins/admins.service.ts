@@ -44,7 +44,7 @@ export class AdminsService {
       throw new NotFoundException('Admin not found');
     }
 
-    const { encryptedPassword, refreshToken, ...rest } = admin;
+    const { encryptedPassword, refreshToken, isDeleted, ...rest } = admin;
     return rest;
   }
 
