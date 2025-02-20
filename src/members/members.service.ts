@@ -76,7 +76,6 @@ export class MembersService {
   }
 
   async createMember(member: CreateMemberDto) {
-    console.log(member);
     const checkEmail = await this.membersRepository.getMemberByEmail(
       member.email,
     );
