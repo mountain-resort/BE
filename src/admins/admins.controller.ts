@@ -10,6 +10,7 @@ import {
   Param,
   Res,
   ForbiddenException,
+  UsePipes,
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,6 +26,7 @@ import createAdminToken from 'src/common/utils/create-admin.token';
 import { Response } from 'express';
 import { SignInDto } from './dto/sign-in.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { CreateAdminPipe } from './pipes/create-admin.pipe';
 
 @Controller('admins')
 export class AdminsController {
@@ -56,6 +58,7 @@ export class AdminsController {
   }
 
   @Post('sign-up')
+  @UsePipes(CreateAdminPipe)
   async signUp(@Body() data: CreateAdminDto, @Res() res: Response) {
     const admin = await this.adminsService.createAdmin(data);
 

@@ -61,6 +61,23 @@ export class AdminsRepository {
     });
   }
 
+  getAdminByMobile(mobile: string) {
+    return this.prisma.admin.findFirst({
+      where: { mobile },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        encryptedPassword: true,
+        email: true,
+        isDeleted: true,
+        authority: true,
+        refreshToken: true,
+        mobile: true,
+      },
+    });
+  }
+
   createAdmin(data: Prisma.AdminCreateInput) {
     return this.prisma.admin.create({
       data,
@@ -72,6 +89,7 @@ export class AdminsRepository {
         isDeleted: true,
         authority: true,
         mobile: true,
+        encryptedPassword: true,
       },
     });
   }
@@ -88,6 +106,7 @@ export class AdminsRepository {
         isDeleted: true,
         authority: true,
         mobile: true,
+        encryptedPassword: true,
       },
     });
   }

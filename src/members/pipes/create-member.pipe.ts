@@ -7,7 +7,7 @@ export class CreateMemberPipe implements PipeTransform {
   }
 
   private async createMember(value: CreateMemberDto) {
-    const { firstName, lastName, email, password } = value;
+    const { email, password } = value;
 
     const passwordRegex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

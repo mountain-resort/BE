@@ -43,7 +43,6 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(process.env.PORT ?? 3000, () => {
-    console.log(process.env.PORT);
     console.log(`Server is running on port ${process.env.PORT ?? 3000}`);
   });
 }

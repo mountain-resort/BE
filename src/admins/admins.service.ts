@@ -38,6 +38,14 @@ export class AdminsService {
     };
   }
 
+  async getAdminByEmail(email: string) {
+    return this.adminsRepository.getAdminByEmail(email);
+  }
+
+  async getAdminByMobile(mobile: string) {
+    return this.adminsRepository.getAdminByMobile(mobile);
+  }
+
   async getAdminById(id: number) {
     const admin = await this.adminsRepository.getAdminById(id);
     if (!admin) {
@@ -72,11 +80,6 @@ export class AdminsService {
   }
 
   async createAdmin(admin: CreateAdminDto) {
-    const checkEmail = await this.adminsRepository.getAdminByEmail(admin.email);
-    if (checkEmail) {
-      throw new UnprocessableEntityException('Email already exists');
-    }
-
     const { password, ...rest } = admin;
     const hashedPassword: string = await bcrypt.hash(password, 10);
     const newAdmin = await this.adminsRepository.createAdmin({
@@ -118,7 +121,8 @@ export class AdminsService {
         ...rest,
         encryptedPassword: hashedPassword,
       });
-      return updatedAdmin;
+      const { encryptedPassword, isDeleted, ...response } = updatedAdmin;
+      return response;
     } catch (error) {
       throw new BadRequestException('Failed to update admin');
     }
