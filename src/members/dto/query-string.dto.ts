@@ -1,22 +1,3 @@
-import { IsOptional, IsString, IsNumber } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { DefaultQueryStringDto } from 'src/common/dto/default-query-string.dto';
 
-export class QueryStringDto {
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value))
-  page: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value))
-  pageSize: number;
-
-  @IsString()
-  @IsOptional()
-  keyword: string;
-
-  @IsString()
-  @IsOptional()
-  isDeleted: string;
-}
+export class QueryStringDto extends DefaultQueryStringDto {}
