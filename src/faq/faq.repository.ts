@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma-client';
 import { CreateFaqDto } from './dto/create-faq.dto';
 import { UpdateFaqDto } from './dto/update-faq.dto';
-import { OrderByQueryDto } from '../common/dto/order-by.dto';
+import { OrderByDto } from '../common/dto/order-by.dto';
 @Injectable()
 export class FaqRepository {
   constructor(private readonly prismaClient: PrismaService) {}
 
-  getList(keyword: string, orderBy: OrderByQueryDto['orderBy']) {
+  getFaqList(keyword: string, orderBy: OrderByDto) {
     return this.prismaClient.faq.findMany({
       where: {
         OR: [
@@ -32,7 +32,7 @@ export class FaqRepository {
     });
   }
 
-  getById(id: number) {
+  getFaqById(id: number) {
     return this.prismaClient.faq.findUnique({
       where: { id },
       select: {
