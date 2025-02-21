@@ -8,7 +8,7 @@ import { UpdateReviewDto } from './dto/update-review.dto';
 export class ReviewsService {
   constructor(private readonly reviewsRepository: ReviewsRepository) {}
 
-  async GetReviewList(
+  async getReviewList(
     page: number,
     pageSize: number,
     roomType: number,

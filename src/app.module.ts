@@ -23,13 +23,6 @@ import { ReviewsModule } from './reviews/reviews.module';
     AuthModule,
     AdminsModule,
     ActivitiesModule,
-  ],
-  imports: [
-    CommonModule,
-    FaqModule,
-    MembersModule,
-    AuthModule,
-    AdminsModule,
     ReviewsModule,
   ],
   controllers: [AppController],

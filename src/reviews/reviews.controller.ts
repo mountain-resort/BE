@@ -16,10 +16,30 @@ import { UpdateReviewDto } from './dto/update-review.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/common/decorators/user.decorator';
 import { TokenPayloadDto } from 'src/common/dto/token-payload.dto';
-
+import { QueryStringDto } from './dto/query-string.dto';
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
+
+  @Get()
+  async getReviews(@Query() query: QueryStringDto) {
+    const {
+      page = 1,
+      pageSize = 10,
+      roomType = 0,
+      keyword = '',
+      isBest = null,
+    } = query;
+
+    const reviews = await this.reviewsService.getReviewList(
+      page,
+      pageSize,
+      roomType,
+      keyword,
+      isBest,
+    );
+    return reviews;
+  }
 
   @Get(':id')
   async getReviewById(@Param('id') id: number) {
