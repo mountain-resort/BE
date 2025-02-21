@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { AuthGuard } from '@nestjs/passport';
-import { QueryStringDto } from 'src/members/dto/query-string.dto';
+import { QueryStringDto } from './dto/query-string.dto';
 import { TokenPayloadDto } from 'src/common/dto/token-payload.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -39,12 +39,18 @@ export class AdminsController {
       pageSize = 10,
       keyword = '',
       isDeleted = null,
+      auth = null,
+      sortBy = 'createdAt',
+      orderBy = 'desc',
     } = queryStringDto;
     const adminList = await this.adminsService.getAdminList(
       page,
       pageSize,
       keyword,
       isDeleted,
+      auth,
+      sortBy,
+      orderBy,
     );
     return adminList;
   }
