@@ -1,6 +1,3 @@
-export class QueryStringDto {
-  page?: number;
-  pageSize?: number;
-  keyword?: string;
-  isDeleted?: boolean;
-}
+import { DefaultQueryStringDto } from 'src/common/dto/default-query-string.dto';
+
+export class QueryStringDto extends DefaultQueryStringDto {}
