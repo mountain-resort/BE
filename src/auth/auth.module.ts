@@ -4,11 +4,11 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { MembersModule } from 'src/members/members.module';
-import { JwtStrategy } from './strategyies/jwt.strategy';
-import { JwtRefreshStrategy } from './strategyies/jwt-refresh.strategy';
-import { JwtOptionalStrategy } from './strategyies/jwt-optional.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { JwtOptionalStrategy } from './strategies/jwt-optional.strategy';
 import { env } from 'src/common/configs/env';
-import { JwtAdminStrategy } from './strategyies/jwt-admin.strategy';
+import { JwtAdminStrategy } from './strategies/jwt-admin.strategy';
 @Module({
   imports: [
     MembersModule,

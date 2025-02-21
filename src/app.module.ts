@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { FaqModule } from './faq/faq.module';
 import { MembersModule } from './members/members.module';
-import { JwtStrategy } from './auth/strategyies/jwt.strategy';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { AuthModule } from './auth/auth.module';
 import { AdminsModule } from './admins/admins.module';
 

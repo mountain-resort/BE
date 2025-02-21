@@ -15,7 +15,7 @@ import {
 import {
   cookieOptions,
   refreshCookieOptions,
-} from '../common/configs/cookieOptions';
+} from '../common/configs/cookie-options';
 import { MembersService } from './members.service';
 import { QueryStringDto } from './dto/query-string.dto';
 import { User } from 'src/common/decorators/user.decorator';

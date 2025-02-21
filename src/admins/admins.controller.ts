@@ -21,7 +21,7 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import {
   cookieOptions,
   refreshCookieOptions,
-} from 'src/common/configs/cookieOptions';
+} from 'src/common/configs/cookie-options';
 import createAdminToken from 'src/common/utils/create-admin.token';
 import { Response } from 'express';
 import { SignInDto } from './dto/sign-in.dto';
