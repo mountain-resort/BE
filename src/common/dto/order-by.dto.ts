@@ -1,11 +1,9 @@
-export class OrderByQueryDto {
-  orderBy:
-    | {
+export type OrderByDto =
+  | {
+      [key: string]: string;
+    }
+  | {
+      [key: string]: {
         [key: string]: string;
-      }
-    | {
-        [key: string]: {
-          [key: string]: string;
-        };
       };
-}
+    };

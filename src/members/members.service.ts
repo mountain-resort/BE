@@ -8,6 +8,7 @@ import { MembersRepository } from './members.repository';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { WhereCondition } from './dto/where-condition.dto';
+import { OrderByDto } from 'src/common/dto/order-by.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -19,10 +20,18 @@ export class MembersService {
     pageSize: number,
     keyword: string,
     isDeleted: string | null,
+    sortBy: string,
+    orderBy: string,
   ) {
     const where: WhereCondition = this.getWhereCondition(keyword, isDeleted);
+    const orderByCondition = this.getOrderByCondition(sortBy, orderBy);
     const [memberList, totalCount] = await Promise.all([
-      this.membersRepository.getMemberList(where, page, pageSize),
+      this.membersRepository.getMemberList(
+        where,
+        orderByCondition,
+        page,
+        pageSize,
+      ),
       this.membersRepository.getCountMemberList(where),
     ]);
 
@@ -165,5 +174,12 @@ export class MembersService {
         OR,
       };
     }
+  }
+
+  private getOrderByCondition(sortBy: string, orderBy: string) {
+    const orderByCondition: OrderByDto = {
+      [sortBy]: orderBy,
+    };
+    return orderByCondition;
   }
 }

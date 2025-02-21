@@ -20,15 +20,15 @@ export class FaqController {
   constructor(private readonly faqService: FaqService) {}
 
   @Get()
-  async getList(@Query() query: QueryStringDto) {
+  async getFaqList(@Query() query: QueryStringDto) {
     const { keyword = '', sortBy = 'createdAt', orderBy = 'desc' } = query;
-    const faqList = await this.faqService.getList(keyword, sortBy, orderBy);
+    const faqList = await this.faqService.getFaqList(keyword, sortBy, orderBy);
     return faqList;
   }
 
   @Get(':id')
-  async getById(@Param('id') faqId: number) {
-    const faq = await this.faqService.getById(faqId);
+  async getFaqById(@Param('id') faqId: number) {
+    const faq = await this.faqService.getFaqById(faqId);
     return faq;
   }
 
