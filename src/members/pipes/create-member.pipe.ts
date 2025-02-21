@@ -3,11 +3,11 @@ import { CreateMemberDto } from '../dto/create-member.dto';
 
 export class CreateMemberPipe implements PipeTransform {
   transform(value: any) {
-    this.createMember(value);
+    return this.createMember(value);
   }
 
   private async createMember(value: CreateMemberDto) {
-    const { firstName, lastName, email, password } = value;
+    const { email, password } = value;
 
     const passwordRegex =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

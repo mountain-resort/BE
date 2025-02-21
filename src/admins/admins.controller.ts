@@ -10,6 +10,7 @@ import {
   Param,
   Res,
   ForbiddenException,
+  UsePipes,
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -20,11 +21,12 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import {
   cookieOptions,
   refreshCookieOptions,
-} from 'src/common/configs/cookieOptions';
+} from 'src/common/configs/cookie-options';
 import createAdminToken from 'src/common/utils/create-admin.token';
 import { Response } from 'express';
 import { SignInDto } from './dto/sign-in.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { CreateAdminPipe } from './pipes/create-admin.pipe';
 
 @Controller('admins')
 export class AdminsController {
@@ -48,7 +50,7 @@ export class AdminsController {
   }
 
   @Get('me')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async getAdmin(@User() user: TokenPayloadDto) {
     const adminId = user.id;
     const admin = await this.adminsService.getAdminById(adminId);
@@ -56,6 +58,7 @@ export class AdminsController {
   }
 
   @Post('sign-up')
+  @UsePipes(CreateAdminPipe)
   async signUp(@Body() data: CreateAdminDto, @Res() res: Response) {
     const admin = await this.adminsService.createAdmin(data);
 
@@ -85,7 +88,7 @@ export class AdminsController {
   }
 
   @Post('password/check')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async checkPassword(
     @User() user: TokenPayloadDto,
     @Body() data: { password: string },
@@ -101,7 +104,7 @@ export class AdminsController {
   }
 
   @Patch('me')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async updateAdmin(
     @User() user: TokenPayloadDto,
     @Body() data: UpdateAdminDto,
@@ -112,7 +115,7 @@ export class AdminsController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async updateAdminById(
     @User() user: TokenPayloadDto,
     @Param('id') adminId: number,
@@ -128,7 +131,7 @@ export class AdminsController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('admin-jwt'))
+  @UseGuards(AuthGuard('jwt-admin'))
   async deleteAdmin(
     @User() user: TokenPayloadDto,
     @Param('id') adminId: number,
