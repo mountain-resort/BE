@@ -7,9 +7,22 @@ import { MembersModule } from './members/members.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { AuthModule } from './auth/auth.module';
 import { AdminsModule } from './admins/admins.module';
+import { ConfigModule } from '@nestjs/config';
+import { ActivitiesModule } from './activities/activities.module';
 
 @Module({
-  imports: [CommonModule, FaqModule, MembersModule, AuthModule, AdminsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    CommonModule,
+    FaqModule,
+    MembersModule,
+    AuthModule,
+    AdminsModule,
+    ActivitiesModule,
+  ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
 })
