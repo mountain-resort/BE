@@ -28,6 +28,8 @@ export class ReviewsRepository {
         id: true,
         rating: true,
         comment: true,
+        title: true,
+        isBest: true,
         member: {
           select: {
             id: true,
@@ -46,6 +48,8 @@ export class ReviewsRepository {
         id: true,
         rating: true,
         comment: true,
+        title: true,
+        isBest: true,
         member: {
           select: {
             id: true,
@@ -72,6 +76,8 @@ export class ReviewsRepository {
         id: true,
         rating: true,
         comment: true,
+        title: true,
+        isBest: true,
         member: {
           select: {
             id: true,
@@ -92,6 +98,7 @@ export class ReviewsRepository {
         rating: true,
         comment: true,
         title: true,
+        isBest: true,
         member: {
           select: {
             id: true,
