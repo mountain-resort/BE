@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { ReviewsRepository } from './reviews.repository';
 import { Prisma } from '@prisma/client';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -17,8 +21,8 @@ export class ReviewsService {
     orderBy: string,
     sortBy: string,
   ) {
-    const whereCondition = this.setWhereCondition(roomType, keyword, isBest);
-    const orderCondition = this.setOrderCondition(orderBy, sortBy);
+    const whereCondition = this.getWhereCondition(roomType, keyword, isBest);
+    const orderCondition = this.getOrderCondition(orderBy, sortBy);
     const [reviewList, reviewCount] = await Promise.all([
       this.reviewsRepository.getReviewList(
         whereCondition,
@@ -26,7 +30,7 @@ export class ReviewsService {
         page,
         pageSize,
       ),
-      this.reviewsRepository.getReviewCount(whereCondition),
+      this.reviewsRepository.getTotalReviewCount(whereCondition),
     ]);
 
     const hasNext = reviewCount > page * pageSize;
@@ -69,15 +73,29 @@ export class ReviewsService {
     return this.reviewsRepository.deleteReview(id);
   }
 
-  async updateReviewNotBest(id: number) {
-    return this.reviewsRepository.updateReviewNotBest(id);
-  }
-
   async updateReviewBest(id: number) {
+    const review = await this.reviewsRepository.getReviewById(id);
+    if (!review) {
+      throw new NotFoundException('Not Found Review');
+    }
+    if (review.isBest) {
+      throw new BadRequestException('this review is already best');
+    }
     return this.reviewsRepository.updateReviewBest(id);
   }
 
-  private setWhereCondition(
+  async updateReviewNotBest(id: number) {
+    const review = await this.reviewsRepository.getReviewById(id);
+    if (!review) {
+      throw new NotFoundException('Not Found Review');
+    }
+    if (!review.isBest) {
+      throw new BadRequestException('this review is not best');
+    }
+    return this.reviewsRepository.updateReviewNotBest(id);
+  }
+
+  private getWhereCondition(
     roomType: number,
     keyword: string,
     isBest: string | null,
@@ -99,7 +117,7 @@ export class ReviewsService {
     return whereCondition;
   }
 
-  private setOrderCondition(orderBy: string, sortBy: string) {
+  private getOrderCondition(orderBy: string, sortBy: string) {
     return {
       [sortBy]: orderBy,
     };

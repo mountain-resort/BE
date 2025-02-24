@@ -7,7 +7,7 @@ import { CreateReviewDto } from './dto/create-review.dto';
 export class ReviewsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  getReviewCount(whereCondition: Prisma.ReviewWhereInput) {
+  getTotalReviewCount(whereCondition: Prisma.ReviewWhereInput) {
     return this.prisma.review.count({
       where: whereCondition,
     });
