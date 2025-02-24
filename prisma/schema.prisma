@@ -214,6 +214,7 @@ model Review {
   id              Int           @id @default(autoincrement())
   rating          Int // 평점
   comment         String // 리뷰내용
+  title           String? // 리뷰제목
   isDeleted       Boolean       @default(false) // 삭제여부
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt

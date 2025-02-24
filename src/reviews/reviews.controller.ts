@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
   ForbiddenException,
+  UsePipes,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -17,6 +18,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/common/decorators/user.decorator';
 import { TokenPayloadDto } from 'src/common/dto/token-payload.dto';
 import { QueryStringDto } from './dto/query-string.dto';
+import { UpdateReviewTitlePipe } from './pipes/update-review-title.pipe';
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
@@ -78,6 +80,8 @@ export class ReviewsController {
   }
 
   @Patch('best/:id/title')
+  @UseGuards(AuthGuard('jwt-admin'))
+  @UsePipes(UpdateReviewTitlePipe)
   async updateReviewBestTitle(
     @Param('id') reviewId: number,
     @Body() data: UpdateReviewDto,

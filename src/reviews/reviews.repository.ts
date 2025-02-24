@@ -91,6 +91,7 @@ export class ReviewsRepository {
         id: true,
         rating: true,
         comment: true,
+        title: true,
         member: {
           select: {
             id: true,
@@ -110,6 +111,7 @@ export class ReviewsRepository {
         id: true,
         rating: true,
         comment: true,
+        title: true,
         member: {
           select: {
             id: true,
@@ -129,6 +131,7 @@ export class ReviewsRepository {
         id: true,
         rating: true,
         comment: true,
+        title: true,
         member: {
           select: {
             id: true,
@@ -141,8 +144,9 @@ export class ReviewsRepository {
   }
 
   deleteReview(id: number) {
-    return this.prisma.review.delete({
+    return this.prisma.review.update({
       where: { id },
+      data: { isDeleted: true },
     });
   }
 }

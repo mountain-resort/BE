@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import { IsNumber, IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateReviewDto {
@@ -11,6 +11,7 @@ export class CreateReviewDto {
   @IsString({ message: 'comment must be a string' })
   comment: string;
 
+  @IsOptional()
   @IsString({ message: 'title must be a string' })
   title?: string;
 }
