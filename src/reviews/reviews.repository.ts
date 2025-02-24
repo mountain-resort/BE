@@ -112,6 +112,7 @@ export class ReviewsRepository {
         rating: true,
         comment: true,
         title: true,
+        isBest: true,
         member: {
           select: {
             id: true,
@@ -132,6 +133,7 @@ export class ReviewsRepository {
         rating: true,
         comment: true,
         title: true,
+        isBest: true,
         member: {
           select: {
             id: true,
