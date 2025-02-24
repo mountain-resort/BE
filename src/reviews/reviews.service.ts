@@ -14,10 +14,18 @@ export class ReviewsService {
     roomType: number,
     keyword: string,
     isBest: string | null,
+    orderBy: string,
+    sortBy: string,
   ) {
     const whereCondition = this.setWhereCondition(roomType, keyword, isBest);
+    const orderCondition = this.setOrderCondition(orderBy, sortBy);
     const [reviewList, reviewCount] = await Promise.all([
-      this.reviewsRepository.getReviewList(whereCondition, page, pageSize),
+      this.reviewsRepository.getReviewList(
+        whereCondition,
+        orderCondition,
+        page,
+        pageSize,
+      ),
       this.reviewsRepository.getReviewCount(whereCondition),
     ]);
 
@@ -41,8 +49,16 @@ export class ReviewsService {
     return review;
   }
 
-  async createReview(memberId: number, review: CreateReviewDto) {
-    return this.reviewsRepository.createReview(memberId, review);
+  async createReview(
+    memberId: number,
+    accommodationId: number,
+    review: CreateReviewDto,
+  ) {
+    return this.reviewsRepository.createReview(
+      memberId,
+      accommodationId,
+      review,
+    );
   }
 
   async updateReview(id: number, review: UpdateReviewDto) {
@@ -81,5 +97,11 @@ export class ReviewsService {
     }
 
     return whereCondition;
+  }
+
+  private setOrderCondition(orderBy: string, sortBy: string) {
+    return {
+      [sortBy]: orderBy,
+    };
   }
 }

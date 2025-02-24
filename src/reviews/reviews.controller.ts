@@ -29,6 +29,8 @@ export class ReviewsController {
       roomType = 0,
       keyword = '',
       isBest = null,
+      orderBy = 'desc',
+      sortBy = 'createdAt',
     } = query;
 
     const reviews = await this.reviewsService.getReviewList(
@@ -37,6 +39,8 @@ export class ReviewsController {
       roomType,
       keyword,
       isBest,
+      orderBy,
+      sortBy,
     );
     return reviews;
   }
@@ -47,14 +51,19 @@ export class ReviewsController {
     return review;
   }
 
-  @Post()
+  @Post(':id')
   @UseGuards(AuthGuard('jwt'))
   async createReview(
+    @Param('id') accommodationId: number,
     @Body() data: CreateReviewDto,
     @User() user: TokenPayloadDto,
   ) {
     const memberId = user.id;
-    const review = await this.reviewsService.createReview(memberId, data);
+    const review = await this.reviewsService.createReview(
+      memberId,
+      accommodationId,
+      data,
+    );
     return review;
   }
 

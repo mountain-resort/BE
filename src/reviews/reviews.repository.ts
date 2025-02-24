@@ -15,11 +15,13 @@ export class ReviewsRepository {
 
   getReviewList(
     whereCondition: Prisma.ReviewWhereInput,
+    orderCondition: Prisma.ReviewOrderByWithRelationInput,
     page: number,
     pageSize: number,
   ) {
     return this.prisma.review.findMany({
       where: whereCondition,
+      orderBy: orderCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
       select: {
@@ -55,10 +57,15 @@ export class ReviewsRepository {
     });
   }
 
-  createReview(memberId: number, review: CreateReviewDto) {
+  createReview(
+    memberId: number,
+    accommodationId: number,
+    review: CreateReviewDto,
+  ) {
     return this.prisma.review.create({
       data: {
         memberId,
+        accommodationId,
         ...review,
       },
       select: {
