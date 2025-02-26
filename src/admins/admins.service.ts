@@ -9,7 +9,8 @@ import { WhereCondition } from './dto/where-condition.dto';
 import * as bcrypt from 'bcrypt';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-
+import { OrderByDto } from 'src/common/dto/order-by.dto';
+import { Authority } from '@prisma/client';
 @Injectable()
 export class AdminsService {
   constructor(private readonly adminsRepository: AdminsRepository) {}
@@ -19,10 +20,23 @@ export class AdminsService {
     pageSize: number,
     keyword: string,
     isDeleted: string | null,
+    auth: string | null,
+    sortBy: string,
+    orderBy: string,
   ) {
-    const where: WhereCondition = this.getWhereCondition(keyword, isDeleted);
+    const where: WhereCondition = this.getWhereCondition(
+      keyword,
+      isDeleted,
+      auth,
+    );
+    const orderByCondition = this.getOrderByCondition(sortBy, orderBy);
     const [adminList, totalCount] = await Promise.all([
-      this.adminsRepository.getAdminList(where, page, pageSize),
+      this.adminsRepository.getAdminList(
+        where,
+        orderByCondition,
+        page,
+        pageSize,
+      ),
       this.adminsRepository.getCountAdminList(where),
     ]);
 
@@ -139,21 +153,41 @@ export class AdminsService {
     return this.adminsRepository.deleteAdmin(adminId);
   }
 
-  private getWhereCondition(keyword: string, isDeleted: string | null) {
+  private getWhereCondition(
+    keyword: string,
+    isDeleted: string | null,
+    authority: string | null,
+  ) {
+    const where: WhereCondition = {};
     const OR = [
       { firstName: { contains: keyword } },
       { lastName: { contains: keyword } },
     ];
 
     if (isDeleted === null || isDeleted === 'null') {
-      return {
-        OR,
-      };
+      where.OR = OR;
     } else {
-      return {
-        isDeleted: isDeleted === 'true' ? true : false,
-        OR,
-      };
+      where.isDeleted = isDeleted === 'true' ? true : false;
+      where.OR = OR;
     }
+
+    if (authority) {
+      where.authority = authority as Authority;
+    }
+
+    return where;
+  }
+
+  private getOrderByCondition(sortBy: string, orderBy: string) {
+    const orderByCondition: OrderByDto = {};
+
+    switch (sortBy) {
+      case 'auth':
+        orderByCondition.authority = orderBy;
+        break;
+      default:
+        orderByCondition.createdAt = orderBy;
+    }
+    return orderByCondition;
   }
 }

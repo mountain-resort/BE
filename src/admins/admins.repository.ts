@@ -2,19 +2,28 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma-client';
 import { WhereCondition } from './dto/where-condition.dto';
 import { Prisma } from '@prisma/client';
+import { OrderByDto } from 'src/common/dto/order-by.dto';
 @Injectable()
 export class AdminsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   getCountAdminList(where: WhereCondition) {
-    return this.prisma.admin.count({ where });
+    return this.prisma.admin.count({
+      where,
+    });
   }
 
-  getAdminList(where: WhereCondition, page: number, pageSize: number) {
+  getAdminList(
+    where: WhereCondition,
+    orderBy: OrderByDto,
+    page: number,
+    pageSize: number,
+  ) {
     return this.prisma.admin.findMany({
       where,
       skip: (page - 1) * pageSize,
       take: pageSize,
+      orderBy,
       select: {
         id: true,
         firstName: true,

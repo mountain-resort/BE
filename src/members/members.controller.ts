@@ -39,12 +39,16 @@ export class MembersController {
       pageSize = 10,
       keyword = '',
       isDeleted = null,
+      sortBy = 'createdAt',
+      orderBy = 'desc',
     } = queryStringDto;
     const memberList = await this.membersService.getMemberList(
       page,
       pageSize,
       keyword,
       isDeleted,
+      sortBy,
+      orderBy,
     );
     return memberList;
   }

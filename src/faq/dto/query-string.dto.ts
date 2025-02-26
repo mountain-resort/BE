@@ -1,13 +1,3 @@
-import { IsOptional, IsString } from 'class-validator';
+import { DefaultQueryStringDto } from 'src/common/dto/default-query-string.dto';
 
-export class QueryStringDto {
-  @IsOptional()
-  @IsString()
-  keyword: string;
-  @IsOptional()
-  @IsString()
-  sortBy: string;
-  @IsOptional()
-  @IsString()
-  orderBy: string;
-}
+export class QueryStringDto extends DefaultQueryStringDto {}

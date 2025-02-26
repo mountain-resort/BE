@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { AdminsModule } from './admins/admins.module';
 import { ConfigModule } from '@nestjs/config';
 import { ActivitiesModule } from './activities/activities.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ActivitiesModule } from './activities/activities.module';
     AuthModule,
     AdminsModule,
     ActivitiesModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
