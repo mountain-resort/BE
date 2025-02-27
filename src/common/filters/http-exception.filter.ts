@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Prisma } from '@prisma/client';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -15,8 +16,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message = exception.message || 'Internal Server Error';
+
     if (exception instanceof HttpException) {
       status = exception.getStatus();
+    } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+      //prisma findUniqueOrThrow 했을때 던지는 오류
+      if (exception.code === 'P2025') {
+        status = HttpStatus.NOT_FOUND;
+        message = 'id not found';
+      }
     }
 
     console.log({
@@ -30,7 +39,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.path,
       method: request.method,
       status,
-      message: exception.message || 'Internal Server Error',
+      message,
       date: new Date(),
     });
   }
