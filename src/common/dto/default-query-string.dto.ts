@@ -1,28 +1,30 @@
 import { IsOptional, IsString, IsNumber } from 'class-validator';
 import { Transform } from 'class-transformer';
 
+type OrderByType = 'asc' | 'desc';
+
 export class DefaultQueryStringDto {
   @IsOptional()
   @IsString()
-  keyword: string;
+  keyword: string = '';
 
   @IsOptional()
   @IsString()
-  sortBy: string;
+  sortBy: string = 'createdAt';
 
   @IsOptional()
   @IsString()
-  orderBy: string;
+  orderBy: OrderByType = 'desc';
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value))
-  page: number;
+  page: number = 1;
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value))
-  pageSize: number;
+  pageSize: number = 10;
 
   @IsString()
   @IsOptional()
