@@ -15,7 +15,7 @@ export class AdminsRepository {
 
   getAdminList(
     where: WhereCondition,
-    orderBy: OrderByDto,
+    orderBy: Prisma.AdminOrderByWithRelationInput[],
     page: number,
     pageSize: number,
   ) {

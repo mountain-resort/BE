@@ -99,11 +99,17 @@ model Dining {
   tradingHours String // 영업시간
   content      String // 식당소개
   location     String // 식당위치
+  type         DiningType @default(IN_SITE) // 식당유형
   menuUrl      String // 메뉴 PDF URL
   imageUrl     String // 식당이미지
   isDeleted    Boolean  @default(false) // 삭제여부
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+enum DiningType {
+  IN_SITE @map("in-site")
+  OUT_SITE @map("out-site")
 }
 
 model Category {

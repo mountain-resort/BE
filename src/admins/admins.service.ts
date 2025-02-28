@@ -11,6 +11,8 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { OrderByDto } from 'src/common/dto/order-by.dto';
 import { Authority } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+
 @Injectable()
 export class AdminsService {
   constructor(private readonly adminsRepository: AdminsRepository) {}
@@ -179,14 +181,14 @@ export class AdminsService {
   }
 
   private getOrderByCondition(sortBy: string, orderBy: string) {
-    const orderByCondition: OrderByDto = {};
+    const orderByCondition: Prisma.AdminOrderByWithRelationInput[] = [];
 
     switch (sortBy) {
       case 'auth':
-        orderByCondition.authority = orderBy;
+        orderByCondition.push({ authority: orderBy as Prisma.SortOrder });
         break;
       default:
-        orderByCondition.createdAt = orderBy;
+        orderByCondition.push({ createdAt: orderBy as Prisma.SortOrder });
     }
     return orderByCondition;
   }

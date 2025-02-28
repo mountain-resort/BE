@@ -10,6 +10,7 @@ import { AdminsModule } from './admins/admins.module';
 import { ConfigModule } from '@nestjs/config';
 import { ActivitiesModule } from './activities/activities.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { DiningModule } from './dining/dining.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     AdminsModule,
     ActivitiesModule,
     ReviewsModule,
+    DiningModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
