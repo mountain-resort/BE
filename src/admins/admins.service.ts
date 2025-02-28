@@ -181,14 +181,14 @@ export class AdminsService {
   }
 
   private getOrderByCondition(sortBy: string, orderBy: string) {
-    const orderByCondition: Prisma.AdminOrderByWithRelationInput[] = [];
+    const orderByCondition: Prisma.AdminOrderByWithRelationInput = {};
 
     switch (sortBy) {
       case 'auth':
-        orderByCondition.push({ authority: orderBy as Prisma.SortOrder });
+        orderByCondition.authority = orderBy as Prisma.SortOrder;
         break;
       default:
-        orderByCondition.push({ createdAt: orderBy as Prisma.SortOrder });
+        orderByCondition.createdAt = orderBy as Prisma.SortOrder;
     }
     return orderByCondition;
   }
