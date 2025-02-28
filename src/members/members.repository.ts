@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma-client';
 import { WhereCondition } from './dto/where-condition.dto';
 import { Prisma } from '@prisma/client';
-import { OrderByDto } from 'src/common/dto/order-by.dto';
 @Injectable()
 export class MembersRepository {
   constructor(private readonly prismaClient: PrismaService) {}
@@ -13,7 +12,7 @@ export class MembersRepository {
 
   getMemberList(
     where: WhereCondition,
-    orderBy: OrderByDto,
+    orderBy: Prisma.MemberOrderByWithRelationInput,
     page: number,
     pageSize: number,
   ) {
