@@ -25,18 +25,21 @@ export class ActivitiesService {
     };
   }
 
-  getActivityById(id: number) {
-    return this.activityRepository.getActivityById(id);
+  async getActivityById(id: number) {
+    return await this.activityRepository.getActivityById(id);
   }
 
-  createActivity(createActivityDto: CreateActivityDto) {
-    return 'This action adds a new activity';
+  async createActivity(
+    createActivityData: CreateActivityDto & { imageUrl: string },
+  ) {
+    return await this.activityRepository.createActivity(createActivityData);
   }
-  updateActivity(id: number, updateActivityDto: UpdateActivityDto) {
+
+  async updateActivity(id: number, updateActivityDto: UpdateActivityDto) {
     return `This action updates a #${id} activity`;
   }
 
-  deleteActivityById(id: number) {
-    return `This action removes a #${id} activity`;
+  async deleteActivityById(id: number) {
+    return await this.activityRepository.deleteActivityById(id);
   }
 }

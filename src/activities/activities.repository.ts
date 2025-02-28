@@ -1,7 +1,12 @@
 import { PrismaService } from 'src/common/prisma-client';
 import { QueryStringDto } from './dto/query-string.dto';
 import { OffsetQueryBuilder } from 'src/common/builders/query-builder';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateActivityDto } from './dto/create-activity.dto';
 
 @Injectable()
 export class ActivityRepository {
@@ -52,14 +57,25 @@ export class ActivityRepository {
     });
   }
 
-  createActivity() {
-    return 'This action adds a new activity';
+  async createActivity(createActivityDto: CreateActivityDto) {
+    return await this.prismaClient.activity.create({ data: createActivityDto });
   }
-  updateActivity() {
+  async updateActivity() {
     return `This action updates a # activity`;
   }
 
-  deleteActivityById(id: number) {
-    return `This action removes a #${id} activity`;
+  async deleteActivityById(id: number) {
+    const activity = await this.prismaClient.activity.findUniqueOrThrow({
+      where: { id },
+    });
+
+    if (activity.isDeleted) {
+      throw new BadRequestException(`Activity #${id} is already deleted.`);
+    }
+
+    return await this.prismaClient.activity.update({
+      where: { id },
+      data: { isDeleted: true },
+    });
   }
 }
