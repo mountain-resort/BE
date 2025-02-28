@@ -34,8 +34,10 @@ export class DiningController {
     @UploadedFile() file: Express.Multer.File,
     @UploadedFile() menu: Express.Multer.File,
   ) {
-    const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');
-    const menuUrl = await this.cloudinaryService.uploadImage(menu, 'menu');
+    const [imageUrl, menuUrl] = await Promise.all([
+      this.cloudinaryService.uploadImage(file, 'image'),
+      this.cloudinaryService.uploadImage(menu, 'menu'),
+    ]);
     const diningWithImage = {
       ...createDiningDto,
       imageUrl,
@@ -85,8 +87,10 @@ export class DiningController {
     @UploadedFile() file: Express.Multer.File,
     @UploadedFile() menu: Express.Multer.File,
   ) {
-    const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');
-    const menuUrl = await this.cloudinaryService.uploadImage(menu, 'menu');
+    const [imageUrl, menuUrl] = await Promise.all([
+      this.cloudinaryService.uploadImage(file, 'image'),
+      this.cloudinaryService.uploadImage(menu, 'menu'),
+    ]);
     const diningWithImage = {
       ...updateDiningDto,
       imageUrl,
