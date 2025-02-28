@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ActivitiesService } from './activities.service';
 import { ActivitiesController } from './activities.controller';
+import { ActivitiesService } from './activities.service';
+import { ActivityRepository } from './activities.repository';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
+  imports: [CommonModule],
   controllers: [ActivitiesController],
-  providers: [ActivitiesService],
+  providers: [ActivitiesService, ActivityRepository],
 })
 export class ActivitiesModule {}

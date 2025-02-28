@@ -4,27 +4,31 @@ import { Transform } from 'class-transformer';
 export class DefaultQueryStringDto {
   @IsOptional()
   @IsString()
-  keyword: string;
+  keyword: string = '';
 
   @IsOptional()
   @IsString()
-  sortBy: string;
+  sortBy: string = 'createdAt';
 
   @IsOptional()
   @IsString()
-  orderBy: string;
+  orderBy: 'asc' | 'desc' = 'desc';
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value))
-  page: number;
+  page: number = 1;
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value))
-  pageSize: number;
+  pageSize: number = 10;
 
   @IsString()
   @IsOptional()
   isDeleted: string;
+
+  @IsString()
+  @IsOptional()
+  lastId;
 }
