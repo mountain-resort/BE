@@ -1,8 +1,6 @@
 import { IsOptional, IsString, IsNumber } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-type OrderByType = 'asc' | 'desc';
-
 export class DefaultQueryStringDto {
   @IsOptional()
   @IsString()
@@ -14,7 +12,7 @@ export class DefaultQueryStringDto {
 
   @IsOptional()
   @IsString()
-  orderBy: OrderByType = 'desc';
+  orderBy: 'asc' | 'desc' = 'desc';
 
   @IsNumber()
   @IsOptional()
@@ -29,4 +27,8 @@ export class DefaultQueryStringDto {
   @IsString()
   @IsOptional()
   isDeleted: string;
+
+  @IsString()
+  @IsOptional()
+  lastId;
 }

@@ -1,12 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
-interface QueryOptions {
-  where?: any;
-  orderBy?: any;
-  skip?: number;
-  take?: number;
-  cursor?: { id: number };
-}
+import { QueryOptions } from '../dto/query-options.dto';
 
 @Injectable()
 export class BaseQueryBuilder {
@@ -35,7 +28,7 @@ export class OffsetQueryBuilder extends BaseQueryBuilder {
   private take = 10;
 
   withOffset(page: number, pageSize: number) {
-    this.skip = page <= 1 ? 0 : (page - 1) * 10;
+    this.skip = page <= 1 ? 0 : (page - 1) * pageSize;
     this.take = pageSize;
     return this;
   }
@@ -55,8 +48,8 @@ export class CursorQueryBuilder extends BaseQueryBuilder {
   private cursor: number | null = null;
   private limit = 10;
 
-  withCursor(lastId: number, limit: number) {
-    this.cursor = lastId;
+  withCursor(cursor: number, limit: number) {
+    this.cursor = cursor;
     this.limit = limit;
     return this;
   }
