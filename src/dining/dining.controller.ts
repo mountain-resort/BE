@@ -1,46 +1,108 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { DiningService } from './dining.service';
 import { CreateDiningDto } from './dto/create-dining.dto';
 import { UpdateDiningDto } from './dto/update-dining.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { QueryStringDto } from './dto/query-string.dto';
-
+import { CloudinaryService } from 'src/common/cloudinary/cloudinary.service';
 @Controller('dining')
 export class DiningController {
-  constructor(private readonly diningService: DiningService) {}
+  constructor(
+    private readonly diningService: DiningService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
-  createDining(@Body() createDiningDto: CreateDiningDto) {
-    return this.diningService.createDining(createDiningDto);
+  @UseGuards(AuthGuard('jwt-admin'))
+  @UseInterceptors(FileInterceptor('imageUrl'))
+  @UseInterceptors(FileInterceptor('menuUrl'))
+  async createDining(
+    @Body() createDiningDto: CreateDiningDto,
+    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() menu: Express.Multer.File,
+  ) {
+    const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');
+    const menuUrl = await this.cloudinaryService.uploadImage(menu, 'menu');
+    const diningWithImage = {
+      ...createDiningDto,
+      imageUrl,
+      menuUrl,
+    };
+    return this.diningService.createDining(diningWithImage);
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  getDiningList(@Query() query: QueryStringDto) {
-    const { keyword = '', isDeleted = null, type = null, sortBy = 'createdAt', orderBy = 'desc', page = 1, pageSize = 10 } = query;
-    const diningList = this.diningService.getDiningList(page, pageSize, keyword, isDeleted, type, sortBy, orderBy);
+  async getDiningList(@Query() query: QueryStringDto) {
+    const {
+      keyword = '',
+      isDeleted = null,
+      type = null,
+      sortBy = 'createdAt',
+      orderBy = 'desc',
+      page = 1,
+      pageSize = 10,
+    } = query;
+    const diningList = await this.diningService.getDiningList(
+      page,
+      pageSize,
+      keyword,
+      isDeleted,
+      type,
+      sortBy,
+      orderBy,
+    );
     return diningList;
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('admin-jwt'))
-  getDiningById(@Param('id') diningId: number) {
-    const dining = this.diningService.getDiningById(diningId);
+  @UseGuards(AuthGuard('jwt-admin'))
+  async getDiningById(@Param('id') diningId: number) {
+    const dining = await this.diningService.getDiningById(diningId);
     return dining;
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('admin-jwt'))
-  updateDining(@Param('id') diningId: number, @Body() updateDiningDto: UpdateDiningDto) {
-    const dining = this.diningService.updateDining(diningId, updateDiningDto);
+  @UseGuards(AuthGuard('jwt-admin'))
+  @UseInterceptors(FileInterceptor('imageUrl'))
+  @UseInterceptors(FileInterceptor('menuUrl'))
+  async updateDining(
+    @Param('id') diningId: number,
+    @Body() updateDiningDto: UpdateDiningDto,
+    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() menu: Express.Multer.File,
+  ) {
+    const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');
+    const menuUrl = await this.cloudinaryService.uploadImage(menu, 'menu');
+    const diningWithImage = {
+      ...updateDiningDto,
+      imageUrl,
+      menuUrl,
+    };
+    const dining = await this.diningService.updateDining(
+      diningId,
+      diningWithImage,
+    );
     return dining;
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('admin-jwt'))
-  removeDining(@Param('id') diningId: number) {
-    const dining = this.diningService.deleteDining(diningId);
+  @UseGuards(AuthGuard('jwt-admin'))
+  async removeDining(@Param('id') diningId: number) {
+    const dining = await this.diningService.deleteDining(diningId);
     return dining;
   }
 }

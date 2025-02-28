@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
 
 export class CreateDiningDto {
   @IsNotEmpty({ message: 'Name is required' })
@@ -8,6 +7,9 @@ export class CreateDiningDto {
 
   @IsNotEmpty({ message: 'Description is required' })
   @IsString({ message: 'Description must be a string' })
+  @Length(30, 300, {
+    message: 'Description must be between 30 and 300 characters',
+  })
   description: string;
 
   @IsNotEmpty({ message: 'Trading hours is required' })
@@ -16,6 +18,9 @@ export class CreateDiningDto {
 
   @IsNotEmpty({ message: 'Content is required' })
   @IsString({ message: 'Content must be a string' })
+  @Length(30, 300, {
+    message: 'Content must be between 30 and 300 characters',
+  })
   content: string;
 
   @IsNotEmpty({ message: 'Location is required' })
@@ -27,6 +32,6 @@ export class CreateDiningDto {
   menuUrl: string;
 
   @IsNotEmpty({ message: 'Image URL is required' })
-  @IsString({ message: 'Image URL must be a string' })
+  @IsUrl({}, { message: 'Image URL must be a valid URL' })
   imageUrl: string;
 }
