@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma-client';
 import { WhereCondition } from './dto/where-condition.dto';
 import { Prisma } from '@prisma/client';
-import { OrderByDto } from 'src/common/dto/order-by.dto';
 @Injectable()
 export class AdminsRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -37,7 +36,7 @@ export class AdminsRepository {
   }
 
   getAdminById(id: number) {
-    return this.prisma.admin.findFirst({
+    return this.prisma.admin.findUniqueOrThrow({
       where: { id },
       select: {
         id: true,

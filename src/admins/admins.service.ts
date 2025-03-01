@@ -64,9 +64,6 @@ export class AdminsService {
 
   async getAdminById(id: number) {
     const admin = await this.adminsRepository.getAdminById(id);
-    if (!admin) {
-      throw new NotFoundException('Admin not found');
-    }
 
     const { encryptedPassword, refreshToken, isDeleted, ...rest } = admin;
     return rest;
