@@ -10,6 +10,8 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
+  HttpCode,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ActivitiesService } from './activities.service';
@@ -41,31 +43,38 @@ export class ActivitiesController {
     @Body() createActivityDto: CreateActivityDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // 1. 이미지를 Cloudinary에 업로드하고 URL 받기
-    const imageUrl = await this.cloudinaryService.uploadImage(
-      file,
-      'image', // Cloudinary의 image 폴더에 저장
-    );
+    const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');
 
-    // 2. DTO와 이미지 URL을 합쳐서 활동 생성
     const activityWithImage = {
       ...createActivityDto,
       imageUrl,
     };
 
-    // 3. 데이터베이스에 저장
     return await this.activitiesService.createActivity(activityWithImage);
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('image'))
   async updateActivity(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateActivityDto: UpdateActivityDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
+    if (!updateActivityDto || Object.keys(updateActivityDto).length === 0) {
+      throw new BadRequestException('Update request body cannot be empty');
+    }
+
+    if (file) {
+      const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');
+      updateActivityDto = updateActivityDto || {};
+      updateActivityDto.imageUrl = imageUrl;
+    }
+
     return await this.activitiesService.updateActivity(id, updateActivityDto);
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async deleteActivityById(@Param('id', ParseIntPipe) id: number) {
     return await this.activitiesService.deleteActivityById(id);
   }
