@@ -113,16 +113,18 @@ enum DiningType {
 }
 
 model Category {
-  id          Int        @id @default(autoincrement())
-  name        String // 카테고리명
-  description String // 카테고리설명
-  imageUrl    String
-  isDeleted   Boolean    @default(false) // 삭제여부
-  createdBy   Admin      @relation(fields: [adminId], references: [id])
-  adminId     Int //생성 관리자
-  activities  Activity[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id           Int        @id @default(autoincrement())
+  name         String // 카테고리명
+  description  String // 카테고리설명
+  overview     String // 카테고리 오버뷰 (카테고리 페이지 내 설명)
+  heroImageUrl String // 각 카테고리 페이지 히어로 이미지
+  imageUrl     String // 카드내 쓸 작은 이미지
+  isDeleted    Boolean    @default(false) // 삭제여부
+  createdBy    Admin      @relation(fields: [adminId], references: [id])
+  adminId      Int //생성 관리자
+  activities   Activity[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model Activity {
@@ -167,20 +169,21 @@ model Faq {
 }
 
 model Accommodation {
-  id          Int       @id @default(autoincrement())
-  name        String // 숙소명
-  description String // 숙소설명
-  overview    String // 숙소개요
-  cost        Int // 가격
-  imageUrls   String[] // 숙소이미지
-  roomType    RoomType  @default(CABIN) // 객실유형
-  option      String // 옵션
-  isDeleted   Boolean   @default(false) // 삭제여부
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  rooms       Room[]
-  bookings    Booking[]
-  reviews     Review[]
+  id           Int       @id @default(autoincrement())
+  name         String // 숙소명
+  description  String // 숙소설명
+  overview     String // 숙소페이지 내 설명
+  cost         Int // 가격
+  heroImageUrl String // 각 숙소페이지 큰 히어로(대표) 이미지 
+  imageUrls    String[] // 숙소이미지
+  roomType     RoomType  @default(CABIN) // 객실유형
+  option       String // 옵션
+  isDeleted    Boolean   @default(false) // 삭제여부
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  rooms        Room[]
+  bookings     Booking[]
+  reviews      Review[]
 }
 
 enum RoomType {
