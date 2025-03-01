@@ -29,14 +29,12 @@ export class ActivitiesService {
     return await this.activityRepository.getActivityById(id);
   }
 
-  async createActivity(
-    createActivityData: CreateActivityDto & { imageUrl: string },
-  ) {
+  async createActivity(createActivityData: CreateActivityDto) {
     return await this.activityRepository.createActivity(createActivityData);
   }
 
   async updateActivity(id: number, updateActivityDto: UpdateActivityDto) {
-    return `This action updates a #${id} activity`;
+    return await this.activityRepository.updateActivity(id, updateActivityDto);
   }
 
   async deleteActivityById(id: number) {

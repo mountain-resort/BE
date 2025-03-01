@@ -6,18 +6,23 @@ import {
   IsOptional,
 } from 'class-validator';
 
+const LIMIT = {
+  name: { min: 1, max: 100 },
+  description: { min: 10, max: 300 },
+};
+
 export class CreateActivityDto {
   @IsNotEmpty({ message: 'Activity name is required' })
   @IsString({ message: 'Activity name must be a string' })
-  @Length(3, 100, {
-    message: 'Activity name must be between 3 and 100 characters',
+  @Length(LIMIT.name.min, LIMIT.name.max, {
+    message: `Activity name must be between ${LIMIT.name.min} and ${LIMIT.name.max} characters`,
   })
   name: string;
 
   @IsNotEmpty({ message: 'Description is required' })
   @IsString({ message: 'Description must be a string' })
-  @Length(30, 300, {
-    message: 'Description must be between 30 and 300 characters',
+  @Length(LIMIT.description.min, LIMIT.description.max, {
+    message: `Description must be between ${LIMIT.description.min} and ${LIMIT.description.max} characters`,
   })
   description: string;
 

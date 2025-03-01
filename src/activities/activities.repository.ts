@@ -1,12 +1,9 @@
 import { PrismaService } from 'src/common/prisma-client';
 import { QueryStringDto } from './dto/query-string.dto';
 import { OffsetQueryBuilder } from 'src/common/builders/query-builder';
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateActivityDto } from './dto/create-activity.dto';
+import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Injectable()
 export class ActivityRepository {
@@ -17,10 +14,9 @@ export class ActivityRepository {
   async getTotalCount(params: QueryStringDto) {
     const query = new OffsetQueryBuilder()
       .withSearch(this.SEARCH_FIELDS, params.keyword)
-      .withOrder(params.sortBy, params.orderBy)
       .build();
 
-    return await this.prismaClient.activity.count({ ...query });
+    return await this.prismaClient.activity.count(query.where);
   }
 
   async getActivityList(params: QueryStringDto) {
@@ -33,6 +29,7 @@ export class ActivityRepository {
       select: {
         id: true,
         name: true,
+        description: true,
         imageUrl: true,
         createdAt: true,
         updatedAt: true,
@@ -48,6 +45,7 @@ export class ActivityRepository {
       select: {
         id: true,
         name: true,
+        description: true,
         imageUrl: true,
         createdAt: true,
         updatedAt: true,
@@ -60,19 +58,25 @@ export class ActivityRepository {
   async createActivity(createActivityDto: CreateActivityDto) {
     return await this.prismaClient.activity.create({ data: createActivityDto });
   }
-  async updateActivity() {
-    return `This action updates a # activity`;
+
+  async updateActivity(id: number, updateActivity: UpdateActivityDto) {
+    return await this.prismaClient.activity.update({
+      where: { id, isDeleted: false },
+      data: updateActivity,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
+        category: true,
+        categoryId: true,
+      },
+    });
   }
 
   async deleteActivityById(id: number) {
-    const activity = await this.prismaClient.activity.findUniqueOrThrow({
-      where: { id },
-    });
-
-    if (activity.isDeleted) {
-      throw new BadRequestException(`Activity #${id} is already deleted.`);
-    }
-
     return await this.prismaClient.activity.update({
       where: { id },
       data: { isDeleted: true },
