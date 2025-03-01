@@ -43,10 +43,6 @@ export class ActivitiesController {
     @Body() createActivityDto: CreateActivityDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (!file) {
-      throw new BadRequestException('Image file is required');
-    }
-
     const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');
 
     const activityWithImage = {

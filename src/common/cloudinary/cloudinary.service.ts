@@ -17,7 +17,7 @@ export class CloudinaryService {
    */
   async uploadFile(
     file: Express.Multer.File,
-    folder: string = 'default',
+    folder: string = 'files',
   ): Promise<string> {
     if (!file) {
       throw new BadRequestException('File is required for upload');
@@ -59,8 +59,12 @@ export class CloudinaryService {
    */
   async uploadImage(
     file: Express.Multer.File,
-    folder: string = 'default',
+    folder: string = 'images',
   ): Promise<string> {
+    if (!file) {
+      throw new BadRequestException('image is required for upload');
+    }
+
     try {
       return await this.uploadFile(file, folder);
     } catch (error) {
