@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma-client';
 import { CreateFaqDto } from './dto/create-faq.dto';
 import { UpdateFaqDto } from './dto/update-faq.dto';
-import { OrderByDto } from '../common/dto/order-by.dto';
+import { Prisma } from '@prisma/client';
 @Injectable()
 export class FaqRepository {
   constructor(private readonly prismaClient: PrismaService) {}
 
-  getFaqList(keyword: string, orderBy: OrderByDto) {
+  getFaqList(keyword: string, orderBy: Prisma.FaqOrderByWithRelationInput) {
     return this.prismaClient.faq.findMany({
       where: {
         OR: [

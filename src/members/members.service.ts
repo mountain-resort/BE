@@ -10,7 +10,7 @@ import { UpdateMemberDto } from './dto/update-member.dto';
 import { WhereCondition } from './dto/where-condition.dto';
 import { OrderByDto } from 'src/common/dto/order-by.dto';
 import * as bcrypt from 'bcrypt';
-
+import { Prisma } from '@prisma/client';
 @Injectable()
 export class MembersService {
   constructor(private readonly membersRepository: MembersRepository) {}
@@ -177,7 +177,7 @@ export class MembersService {
   }
 
   private getOrderByCondition(sortBy: string, orderBy: string) {
-    const orderByCondition: OrderByDto = {
+    const orderByCondition: Prisma.MemberOrderByWithRelationInput = {
       [sortBy]: orderBy,
     };
     return orderByCondition;

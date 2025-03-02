@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FaqRepository } from './faq.repository';
 import { CreateFaqDto } from './dto/create-faq.dto';
 import { UpdateFaqDto } from './dto/update-faq.dto';
-import { OrderByDto } from 'src/common/dto/order-by.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class FaqService {
@@ -30,7 +30,7 @@ export class FaqService {
   }
 
   private getOrderByCondition(sortBy: string, orderBy: string) {
-    const orderByCondition: OrderByDto = {
+    const orderByCondition: Prisma.FaqOrderByWithRelationInput = {
       [sortBy]: orderBy,
     };
     return orderByCondition;

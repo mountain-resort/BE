@@ -118,8 +118,9 @@ export class ReviewsService {
   }
 
   private getOrderCondition(orderBy: string, sortBy: string) {
-    return {
+    const orderCondition: Prisma.ReviewOrderByWithRelationInput = {
       [sortBy]: orderBy,
     };
+    return orderCondition;
   }
 }

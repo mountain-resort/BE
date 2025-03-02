@@ -5,6 +5,8 @@ import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
+import { PrismaExceptionFilter } from 'src/common/filters/prisma-exception.filter';
+import { MulterExceptionFilter } from 'src/common/filters/multer-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -41,7 +43,12 @@ async function bootstrap() {
 
   app.enableCors(corsOptions);
   app.use(cookieParser());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(
+    // 필터는 마지막에 등록된 필터부터 적용된다.
+    new HttpExceptionFilter(), // 기본 예외 처리
+    new PrismaExceptionFilter(), // Prisma 예외 처리
+    new MulterExceptionFilter(), // Multer 예외 처리
+  );
   await app.listen(process.env.PORT ?? 3000, () => {
     console.log(`Server is running on port ${process.env.PORT ?? 3000}`);
   });

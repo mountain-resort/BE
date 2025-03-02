@@ -93,17 +93,23 @@ model Event {
 }
 
 model Dining {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   name         String // 식당명
   description  String // 식당설명
   tradingHours String // 영업시간
   content      String // 식당소개
   location     String // 식당위치
+  type         DiningType @default(ON_SITE) // 식당유형
   menuUrl      String // 메뉴 PDF URL
   imageUrl     String // 식당이미지
-  isDeleted    Boolean  @default(false) // 삭제여부
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isDeleted    Boolean    @default(false) // 삭제여부
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum DiningType {
+  ON_SITE  @map("on-site")
+  OFF_SITE @map("off-site")
 }
 
 model Category {
