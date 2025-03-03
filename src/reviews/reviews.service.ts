@@ -55,14 +55,10 @@ export class ReviewsService {
 
   async createReview(
     memberId: number,
-    accommodationId: number,
+    propertyId: number,
     review: CreateReviewDto,
   ) {
-    return this.reviewsRepository.createReview(
-      memberId,
-      accommodationId,
-      review,
-    );
+    return this.reviewsRepository.createReview(memberId, propertyId, review);
   }
 
   async updateReview(id: number, review: UpdateReviewDto) {
@@ -102,7 +98,7 @@ export class ReviewsService {
   ) {
     const whereCondition: Prisma.ReviewWhereInput = {};
     if (roomType) {
-      whereCondition.accommodationId = roomType;
+      whereCondition.propertyId = roomType;
     }
 
     if (keyword) {

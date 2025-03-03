@@ -27,7 +27,7 @@ export class MembersRepository {
         lastName: true,
         email: true,
         mobile: true,
-        mileage: true,
+        loyaltyPoints: true,
       },
     });
   }
@@ -41,7 +41,7 @@ export class MembersRepository {
         lastName: true,
         email: true,
         mobile: true,
-        mileage: true,
+        loyaltyPoints: true,
         encryptedPassword: true,
         refreshToken: true,
       },
@@ -57,7 +57,7 @@ export class MembersRepository {
         lastName: true,
         email: true,
         mobile: true,
-        mileage: true,
+        loyaltyPoints: true,
         encryptedPassword: true,
         refreshToken: true,
         isDeleted: true,
@@ -74,7 +74,7 @@ export class MembersRepository {
         lastName: true,
         email: true,
         mobile: true,
-        mileage: true,
+        loyaltyPoints: true,
       },
     });
   }
@@ -89,7 +89,7 @@ export class MembersRepository {
         lastName: true,
         email: true,
         mobile: true,
-        mileage: true,
+        loyaltyPoints: true,
       },
     });
   }
