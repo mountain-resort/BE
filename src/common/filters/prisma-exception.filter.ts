@@ -54,75 +54,57 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     message: string;
   } {
     // 예외 코드 처리 prisma 예외 코드 참고
-    switch (error.code) {
-      // 레코드 없음
-      case 'P2025':
-        return {
-          status: HttpStatus.NOT_FOUND,
-          message: this.responseMessage(error, target)[language],
-        };
-      // 중복 레코드
-      case 'P2002': {
-        const target = error.meta?.target ? `${error.meta.target}` : '';
-        return {
-          status: HttpStatus.CONFLICT,
-          message: this.responseMessage(error, target)[language],
-        };
-      }
-      // 외래키 오류
-      case 'P2003': {
-        const target = error.meta?.target ? `${error.meta.target}` : '';
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          message: this.responseMessage(error, target)[language],
-        };
-      }
-      // 잘못된 입력
-      case 'P2004': {
-        const target = error.meta?.target ? `${error.meta.target}` : '';
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          message: this.responseMessage(error, target)[language],
-        };
-      }
-      // 기본 예외 처리
-      default:
-        return {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: this.responseMessage(error)[language],
-        };
-    }
+    const responseMessage = this.getResponseMessage(error, target);
+    return {
+      status: responseMessage.status,
+      message: responseMessage.message[language],
+    };
   }
 
-  private responseMessage(
+  private getResponseMessage(
     error: Prisma.PrismaClientKnownRequestError,
     target?: string,
   ) {
     switch (error.code) {
       case 'P2025':
         return {
-          ko: '존재하지 않는 레코드입니다.',
-          en: 'Record not found',
+          status: HttpStatus.NOT_FOUND,
+          message: {
+            ko: '존재하지 않는 레코드입니다.',
+            en: 'Record not found',
+          },
         };
       case 'P2002':
         return {
-          ko: '중복된 레코드입니다.',
-          en: `Duplicate entry: ${target} already exists`,
+          status: HttpStatus.CONFLICT,
+          message: {
+            ko: '중복된 레코드입니다.',
+            en: `Duplicate entry: ${target} already exists`,
+          },
         };
       case 'P2003':
         return {
-          ko: '외래키 오류입니다.',
-          en: `Invalid foreign key: ${target}`,
+          status: HttpStatus.BAD_REQUEST,
+          message: {
+            ko: '외래키 오류입니다.',
+            en: `Invalid foreign key: ${target}`,
+          },
         };
       case 'P2004':
         return {
-          ko: '잘못된 입력입니다.',
-          en: `Invalid input: ${target}`,
+          status: HttpStatus.BAD_REQUEST,
+          message: {
+            ko: '잘못된 입력입니다.',
+            en: `Invalid input: ${target}`,
+          },
         };
       default:
         return {
-          ko: '데이터베이스 오류입니다.',
-          en: `Database error: ${error.code}`,
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: {
+            ko: '데이터베이스 오류입니다.',
+            en: `Database error: ${error.code}`,
+          },
         };
     }
   }
