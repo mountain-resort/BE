@@ -22,7 +22,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const language = request.query.language as string;
+    const language = (request.query.language as string) || 'en';
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = exception.message;
