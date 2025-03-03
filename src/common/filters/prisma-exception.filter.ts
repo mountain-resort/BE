@@ -22,12 +22,14 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const query = request.query;
+    const language = request.query.language as string;
+
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = exception.message;
 
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
-      const result = this.handlePrismaError(query, exception);
+      const target = exception.meta?.target ? `${exception.meta.target}` : '';
+      const result = this.handlePrismaError(language, exception, target);
       status = result.status;
       message = result.message;
     }
@@ -45,20 +47,20 @@ export class PrismaExceptionFilter implements ExceptionFilter {
   }
 
   private handlePrismaError(
-    query: any,
+    language: string,
     error: Prisma.PrismaClientKnownRequestError,
+    target?: string,
   ): {
     status: number;
     message: string;
   } {
-    const language = query.language;
     // 예외 코드 처리 prisma 예외 코드 참고
     switch (error.code) {
       // 레코드 없음
       case 'P2025':
         return {
           status: HttpStatus.NOT_FOUND,
-          message: this.responseMessage(error)[language],
+          message: this.responseMessage(error, target)[language],
         };
       // 중복 레코드
       case 'P2002': {
