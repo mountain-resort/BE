@@ -60,9 +60,9 @@ export class ActivitiesController {
     @Body() updateActivityDto: UpdateActivityDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    if (!updateActivityDto || Object.keys(updateActivityDto).length === 0) {
-      throw new BadRequestException('Update request body cannot be empty');
-    }
+    // if (!updateActivityDto || Object.keys(updateActivityDto).length === 0) {
+    //   throw new BadRequestException('Update request body cannot be empty');
+    // }
 
     if (file) {
       const imageUrl = await this.cloudinaryService.uploadImage(file, 'image');

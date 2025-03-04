@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   Length,
@@ -38,6 +39,16 @@ export class CreateCategoryDto {
   overview: string;
 
   @IsNotEmpty({ message: 'Related activities are required' })
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value).map(Number);
+      } catch {
+        return value.split(',').map(Number);
+      }
+    }
+    return Array.isArray(value) ? value.map(Number) : [Number(value)];
+  })
   @IsArray({ message: 'Activities must be an array' })
   @IsNumber({}, { each: true, message: 'Each activity ID must be a number' })
   @ArrayMinSize(1, { message: 'At least one activity must be provided' })
@@ -50,7 +61,4 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsUrl({}, { message: 'Image URL must be a valid URL' })
   imageUrl: string;
-
-  @IsNumber()
-  adminId: number;
 }

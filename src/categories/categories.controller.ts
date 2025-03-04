@@ -67,9 +67,8 @@ export class CategoriesController {
       ...createCategoryDto,
       imageUrl,
       heroImageUrl,
-      adminId: user.id,
     };
-    return await this.categoriesService.createCategory(categoryData);
+    return await this.categoriesService.createCategory(categoryData, user.id);
   }
 
   @Patch(':id')
@@ -87,25 +86,41 @@ export class CategoriesController {
     @UploadedFiles()
     files: { image: Express.Multer.File[]; heroImage: Express.Multer.File[] },
   ) {
-    const imageUrl = await this.cloudinaryService.uploadImage(
-      files.image[0],
-      'image',
-    );
-    const heroImageUrl = await this.cloudinaryService.uploadImage(
-      files.heroImage[0],
-      'heroImage',
-    );
-    const categoryData = {
+    let categoryData = {
       ...updateCategoryDto,
-      imageUrl,
-      heroImageUrl,
-      adminId: user.id,
     };
-    return await this.categoriesService.updateCategory(id, categoryData);
+
+    if (files?.image?.[0]) {
+      categoryData.imageUrl = await this.cloudinaryService.uploadImage(
+        files.image[0],
+        'image',
+      );
+    }
+
+    if (files?.heroImage?.[0]) {
+      categoryData.heroImageUrl = await this.cloudinaryService.uploadImage(
+        files.heroImage[0],
+        'heroImage',
+      );
+    }
+
+    return await this.categoriesService.updateCategory(
+      id,
+      categoryData,
+      user.id,
+    );
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt-admin'))
+  @HttpCode(204)
   async deleteCategoryById(@Param('id', ParseIntPipe) id: number) {
     return await this.categoriesService.deleteCategoryById(id);
+  }
+
+  @Patch(':id/restore')
+  @UseGuards(AuthGuard('jwt-admin'))
+  async restoreCategoryById(@Param('id', ParseIntPipe) id: number) {
+    return await this.categoriesService.restoreCategoryById(id);
   }
 }
