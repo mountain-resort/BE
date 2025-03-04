@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
-
 @Catch(
   Prisma.PrismaClientKnownRequestError,
   Prisma.PrismaClientUnknownRequestError,
@@ -22,12 +21,14 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
+    const language = (request.query.language as string) || 'en';
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = exception.message;
 
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
-      const result = this.handlePrismaError(exception);
+      const target = exception.meta?.target ? `${exception.meta.target}` : '';
+      const result = this.handlePrismaError(language, exception, target);
       status = result.status;
       message = result.message;
     }
@@ -44,46 +45,66 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     response.status(status).json(errorResponse);
   }
 
-  private handlePrismaError(error: Prisma.PrismaClientKnownRequestError): {
+  private handlePrismaError(
+    language: string,
+    error: Prisma.PrismaClientKnownRequestError,
+    target?: string,
+  ): {
     status: number;
     message: string;
   } {
     // 예외 코드 처리 prisma 예외 코드 참고
+    const responseMessage = this.getResponseMessage(error, target);
+    return {
+      status: responseMessage.status,
+      message: responseMessage.message[language],
+    };
+  }
+
+  private getResponseMessage(
+    error: Prisma.PrismaClientKnownRequestError,
+    target?: string,
+  ) {
     switch (error.code) {
-      // 레코드 없음
       case 'P2025':
         return {
           status: HttpStatus.NOT_FOUND,
-          message: 'Record not found',
+          message: {
+            ko: '존재하지 않는 레코드입니다.',
+            en: 'Record not found',
+          },
         };
-      // 중복 레코드
-      case 'P2002': {
-        const target = error.meta?.target ? `${error.meta.target}` : '';
+      case 'P2002':
         return {
           status: HttpStatus.CONFLICT,
-          message: `Duplicate entry: ${target} already exists`,
+          message: {
+            ko: '중복된 레코드입니다.',
+            en: `Duplicate entry: ${target} already exists`,
+          },
         };
-      }
-      // 외래키 오류
-      case 'P2003': {
-        const target = error.meta?.target ? `${error.meta.target}` : '';
+      case 'P2003':
         return {
           status: HttpStatus.BAD_REQUEST,
-          message: `Invalid foreign key: ${target}`,
+          message: {
+            ko: '외래키 오류입니다.',
+            en: `Invalid foreign key: ${target}`,
+          },
         };
-      }
-      // 잘못된 입력
-      case 'P2004': {
+      case 'P2004':
         return {
           status: HttpStatus.BAD_REQUEST,
-          message: `Invalid input: ${error.meta?.target}`,
+          message: {
+            ko: '잘못된 입력입니다.',
+            en: `Invalid input: ${target}`,
+          },
         };
-      }
-      // 기본 예외 처리
       default:
         return {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: `Database error: ${error.code}`,
+          message: {
+            ko: '데이터베이스 오류입니다.',
+            en: `Database error: ${error.code}`,
+          },
         };
     }
   }

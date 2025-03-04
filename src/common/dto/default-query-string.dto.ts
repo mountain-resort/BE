@@ -31,4 +31,8 @@ export class DefaultQueryStringDto {
   @IsString()
   @IsOptional()
   lastId;
+
+  @IsString()
+  @IsOptional()
+  language: string;
 }

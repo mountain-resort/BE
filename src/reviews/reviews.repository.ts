@@ -61,15 +61,11 @@ export class ReviewsRepository {
     });
   }
 
-  createReview(
-    memberId: number,
-    accommodationId: number,
-    review: CreateReviewDto,
-  ) {
+  createReview(memberId: number, propertyId: number, review: CreateReviewDto) {
     return this.prisma.review.create({
       data: {
         memberId,
-        accommodationId,
+        propertyId,
         ...review,
       },
       select: {
