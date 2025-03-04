@@ -12,14 +12,22 @@ export class CategoryRepository {
   async getTotalCount(params: QueryStringDto) {
     const query = new CursorQueryBuilder()
       .withSearch(this.SEARCH_FIELDS, params.keyword)
+      .withOrder('id', 'desc')
       .build();
-    return await this.prisma.category.count({ where: query.where });
+
+    return await this.prisma.category.count({
+      where: { ...query.where, isDeleted: false },
+    });
   }
 
-  async getCategoryList(params: QueryStringDto) {
+  async getCategoryList(params: QueryStringDto): Promise<Partial<Category>[]> {
     const query = new CursorQueryBuilder()
       .withSearch(this.SEARCH_FIELDS, params.keyword)
-      .withCursor(params.cursor, params.limit);
+      .withOrder('id', 'desc')
+      .withCursor(params.cursor, params.limit)
+      .build();
+
+    console.log(query);
     return await this.prisma.category.findMany({
       ...query,
       select: {
@@ -32,6 +40,8 @@ export class CategoryRepository {
         isDeleted: true,
         createdAt: true,
         updatedAt: true,
+        createdBy: { select: { id: true, firstName: true } },
+        activities: true,
       },
     });
   }
@@ -39,19 +49,63 @@ export class CategoryRepository {
   async getCategoryById(id: number) {
     return await this.prisma.category.findUniqueOrThrow({
       where: { id },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        overview: true,
+        imageUrl: true,
+        heroImageUrl: true,
+        isDeleted: true,
+        createdAt: true,
+        updatedAt: true,
+        createdBy: { select: { id: true, firstName: true } },
+        activities: true,
+      },
     });
   }
 
-  async createCategory(data: Prisma.CategoryCreateInput): Promise<Category> {
+  async createCategory(
+    data: Prisma.CategoryCreateInput,
+  ): Promise<Partial<Category>> {
     return await this.prisma.category.create({
       data,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        overview: true,
+        imageUrl: true,
+        heroImageUrl: true,
+        isDeleted: true,
+        createdAt: true,
+        updatedAt: true,
+        createdBy: { select: { id: true, firstName: true } },
+        activities: true,
+      },
     });
   }
 
-  async updateCategory(id: number, categoryData: Prisma.CategoryUpdateInput) {
+  async updateCategory(
+    id: number,
+    categoryData: Prisma.CategoryUpdateInput,
+  ): Promise<Partial<Category>> {
     return await this.prisma.category.update({
       where: { id, isDeleted: false },
       data: categoryData,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        overview: true,
+        imageUrl: true,
+        heroImageUrl: true,
+        isDeleted: true,
+        createdAt: true,
+        updatedAt: true,
+        createdBy: { select: { id: true, firstName: true } },
+        activities: true,
+      },
     });
   }
 
@@ -59,6 +113,13 @@ export class CategoryRepository {
     return await this.prisma.category.update({
       where: { id, isDeleted: false },
       data: { isDeleted: true },
+    });
+  }
+
+  async restoreCategoryById(id: number) {
+    return await this.prisma.category.update({
+      where: { id, isDeleted: true },
+      data: { isDeleted: false },
     });
   }
 }

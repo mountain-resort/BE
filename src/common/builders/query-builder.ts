@@ -17,7 +17,7 @@ export class BaseQueryBuilder {
   }
 
   withOrder(field?: string, direction?: 'asc' | 'desc') {
-    this.orders = { [field]: direction };
+    this.orders = { [field]: direction, id: direction };
     return this;
   }
 }
@@ -35,10 +35,10 @@ export class OffsetQueryBuilder extends BaseQueryBuilder {
 
   build(): QueryOptions {
     return {
-      where: this.conditions,
-      orderBy: this.orders,
-      skip: this.skip,
-      take: this.take,
+      ...(this.conditions && { where: this.conditions }),
+      ...(this.orders && { orderBy: this.orders }),
+      ...(this.skip && { skip: this.skip }),
+      ...(this.take && { take: this.take }),
     };
   }
 }
@@ -48,7 +48,10 @@ export class CursorQueryBuilder extends BaseQueryBuilder {
   private cursor: number | null = null;
   private limit = 10;
 
-  withCursor(cursor: number, limit: number) {
+  withCursor(cursor?: number, limit?: number) {
+    if (cursor <= 0) {
+      this.cursor = null;
+    }
     this.cursor = cursor;
     this.limit = limit;
     return this;
@@ -56,13 +59,14 @@ export class CursorQueryBuilder extends BaseQueryBuilder {
 
   build(): QueryOptions {
     const query: QueryOptions = {
-      where: this.conditions,
-      orderBy: this.orders,
-      take: this.limit,
+      ...(this.conditions && { where: this.conditions }),
+      ...(this.orders && { orderBy: this.orders }),
+      ...(this.limit && { take: this.limit }),
     };
 
-    if (this.cursor !== null && this.cursor !== undefined) {
+    if (this.cursor) {
       query.cursor = { id: this.cursor };
+      query.skip = 1;
     }
     return query;
   }

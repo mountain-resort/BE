@@ -10,19 +10,21 @@ export class CategoriesService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
   async getCategoryList(params: QueryStringDto) {
+    const limit = params.limit || 10;
     const [list, totalCount] = await Promise.all([
       this.categoryRepository.getCategoryList(params),
       this.categoryRepository.getTotalCount(params),
     ]);
 
-    const hasNext = totalCount > params.page * params.pageSize;
-    const totalPage = Math.ceil(totalCount / params.pageSize);
-    const currentPage = params.page;
+    console.log(list);
+
+    const hasNext = list.length === limit;
+    const nextCursor = hasNext ? list[list.length - 1]?.id : null;
 
     return {
       hasNext,
-      totalPage,
-      currentPage,
+      nextCursor,
+      totalCount,
       list,
     };
   }
@@ -31,8 +33,8 @@ export class CategoriesService {
     return await this.categoryRepository.getCategoryById(id);
   }
 
-  async createCategory(createCategoryDto: CreateCategoryDto) {
-    const { activityIds, adminId, ...categoryData } = createCategoryDto;
+  async createCategory(createCategoryDto: CreateCategoryDto, adminId: number) {
+    const { activityIds, ...categoryData } = createCategoryDto;
     const prismaInput: Prisma.CategoryCreateInput = {
       ...categoryData,
       createdBy: {
@@ -46,22 +48,33 @@ export class CategoriesService {
     return await this.categoryRepository.createCategory(prismaInput);
   }
 
-  async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto) {
-    const { activityIds, adminId, ...categoryData } = updateCategoryDto;
+  async updateCategory(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+    adminId: number,
+  ) {
+    const { activityIds, ...categoryData } = updateCategoryDto;
 
     const prismaInput: Prisma.CategoryUpdateInput = {
       ...categoryData,
       createdBy: {
         connect: { id: adminId },
       },
-      activities: {
-        connect: activityIds.map((id: number) => ({ id })),
-      },
+
+      activities: activityIds
+        ? {
+            set: activityIds.map((id: number) => ({ id })),
+          }
+        : undefined,
     };
     return await this.categoryRepository.updateCategory(id, prismaInput);
   }
 
   async deleteCategoryById(id: number) {
     return await this.categoryRepository.deleteCategoryById(id);
+  }
+
+  async restoreCategoryById(id: number) {
+    return await this.categoryRepository.restoreCategoryById(id);
   }
 }
