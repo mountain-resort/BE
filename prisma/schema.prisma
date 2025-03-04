@@ -122,15 +122,17 @@ enum DiningType {
 }
 
 model Category {
-  id          Int      @id @default(autoincrement())
-  name        String // 카테고리명
-  description String // 카테고리설명
-  imageUrl    String
-  createdBy   Admin    @relation(fields: [adminId], references: [id])
-  adminId     Int //생성 관리자
-  isDeleted   Boolean  @default(false) // 삭제여부
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  name         String // 카테고리명
+  description  String // 카테고리설명 (카드내부)
+  overview     String // 카테고리 페이지 설명
+  heroImageUrl String // 페이지 메인 이미지
+  imageUrl     String // 카드 메인 이미지
+  createdBy    Admin    @relation(fields: [adminId], references: [id])
+  adminId      Int //생성 관리자
+  isDeleted    Boolean  @default(false) // 삭제여부
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   activities Activity[]
 
