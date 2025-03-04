@@ -28,9 +28,13 @@ export class DefaultQueryStringDto {
   @IsOptional()
   isDeleted: string;
 
-  @IsString()
   @IsOptional()
-  lastId;
+  @IsNumber()
+  cursor: number;
+
+  @IsOptional()
+  @IsNumber()
+  limit: number;
 
   @IsString()
   @IsOptional()

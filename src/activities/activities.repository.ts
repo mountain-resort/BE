@@ -23,6 +23,7 @@ export class ActivityRepository {
     const query = new OffsetQueryBuilder()
       .withSearch(this.SEARCH_FIELDS, params.keyword)
       .withOrder(params.sortBy, params.orderBy)
+      .withOffset(params.page, params.pageSize)
       .build();
     return await this.prismaClient.activity.findMany({
       ...query,
