@@ -23,11 +23,10 @@ export class CategoryRepository {
   async getCategoryList(params: QueryStringDto): Promise<Partial<Category>[]> {
     const query = new CursorQueryBuilder()
       .withSearch(this.SEARCH_FIELDS, params.keyword)
-      .withOrder('id', 'desc')
+      .withOrder(params.sortBy, params.orderBy)
       .withCursor(params.cursor, params.limit)
       .build();
 
-    console.log(query);
     return await this.prisma.category.findMany({
       ...query,
       select: {

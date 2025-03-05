@@ -33,6 +33,9 @@ export class CategoriesController {
 
   @Get()
   async getCategoryList(@Query() params: QueryStringDto) {
+    params.sortBy = params.sortBy || 'name';
+    params.orderBy = params.orderBy || 'asc';
+
     return await this.categoriesService.getCategoryList(params);
   }
 
@@ -86,6 +89,12 @@ export class CategoriesController {
     @UploadedFiles()
     files: { image: Express.Multer.File[]; heroImage: Express.Multer.File[] },
   ) {
+    if (
+      !files &&
+      (!updateCategoryDto || Object.keys(updateCategoryDto).length === 0)
+    ) {
+      throw new BadRequestException('Update request body cannot be empty');
+    }
     let categoryData = {
       ...updateCategoryDto,
     };

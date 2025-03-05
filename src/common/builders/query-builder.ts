@@ -16,8 +16,13 @@ export class BaseQueryBuilder {
     return this;
   }
 
-  withOrder(field?: string, direction?: 'asc' | 'desc') {
-    this.orders = { [field]: direction, id: direction };
+  withOrder(field?: string, direction?: 'asc' | 'desc' | undefined) {
+    if (!field) {
+      this.orders = [{ id: 'asc' }];
+    } else {
+      this.orders = [{ [field]: direction }, { id: 'asc' }];
+    }
+
     return this;
   }
 }
@@ -51,8 +56,9 @@ export class CursorQueryBuilder extends BaseQueryBuilder {
   withCursor(cursor?: number, limit?: number) {
     if (cursor <= 0) {
       this.cursor = null;
+    } else {
+      this.cursor = cursor;
     }
-    this.cursor = cursor;
     this.limit = limit;
     return this;
   }

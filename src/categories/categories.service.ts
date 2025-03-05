@@ -4,12 +4,16 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from './categories.repository';
 import { QueryStringDto } from './dto/query-string.dto';
 import { Prisma } from '@prisma/client';
-
+import validateSortField from 'src/common/utils/validate-sort-field';
 @Injectable()
 export class CategoriesService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
+  private readonly VALID_FIELDS = ['name', 'createdAt', 'updatedAt'];
+
   async getCategoryList(params: QueryStringDto) {
+    validateSortField(params.sortBy, this.VALID_FIELDS);
+
     const limit = params.limit || 10;
     const [list, totalCount] = await Promise.all([
       this.categoryRepository.getCategoryList(params),

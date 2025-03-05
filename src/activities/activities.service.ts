@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { ActivityRepository } from './activities.repository';
 import { QueryStringDto } from './dto/query-string.dto';
+import validateSortField from 'src/common/utils/validate-sort-field';
 @Injectable()
 export class ActivitiesService {
   constructor(private readonly activityRepository: ActivityRepository) {}
@@ -14,14 +15,7 @@ export class ActivitiesService {
   ];
 
   async getActivityList(params: QueryStringDto) {
-    // sortBy 필드 유효 검사
-    if (params.sortBy && !this.VALID_FIELDS.includes(params.sortBy)) {
-      throw new BadRequestException(
-        `Invalid sortBy field. Valid fields are: ${this.VALID_FIELDS.join(
-          ', ',
-        )}`,
-      );
-    }
+    validateSortField(params.sortBy, this.VALID_FIELDS);
 
     const [list, totalCount] = await Promise.all([
       this.activityRepository.getActivityList(params),
