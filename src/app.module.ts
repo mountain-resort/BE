@@ -12,6 +12,7 @@ import { ActivitiesModule } from './activities/activities.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { DiningModule } from './dining/dining.module';
 import { AnnouncementsModule } from './announcements/announcements.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AnnouncementsModule } from './announcements/announcements.module';
     ReviewsModule,
     DiningModule,
     AnnouncementsModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
