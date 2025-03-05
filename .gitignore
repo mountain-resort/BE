@@ -65,3 +65,4 @@ Dockerfile
 
 #prisma
 /prisma/migrations
+/prisma/mock-data
