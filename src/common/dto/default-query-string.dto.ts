@@ -9,11 +9,11 @@ export class DefaultQueryStringDto {
 
   @IsOptional()
   @IsString()
-  sortBy: string = 'createdAt';
+  sortBy: string;
 
   @IsOptional()
   @IsString()
-  orderBy: 'asc' | 'desc' = 'desc';
+  orderBy: 'asc' | 'desc';
 
   @IsNumber()
   @IsOptional()
