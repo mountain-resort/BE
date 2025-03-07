@@ -9,20 +9,35 @@ import {
   Patch,
   Req,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { FaqService } from './faq.service';
 import { QueryStringDto } from './dto/query-string.dto';
 import { CreateFaqDto } from './dto/create-faq.dto';
 import { UpdateFaqDto } from './dto/update-faq.dto';
 import { CreateFaqValidationPipe } from './pipes/create-faq.validation.pipe';
+import { AuthGuard } from '@nestjs/passport';
+
 @Controller('faq')
 export class FaqController {
   constructor(private readonly faqService: FaqService) {}
 
   @Get()
   async getFaqList(@Query() query: QueryStringDto) {
-    const { keyword = '', sortBy = 'createdAt', orderBy = 'desc' } = query;
-    const faqList = await this.faqService.getFaqList(keyword, sortBy, orderBy);
+    const {
+      page = 1,
+      pageSize = 10,
+      keyword = '',
+      sortBy = 'createdAt',
+      orderBy = 'desc',
+    } = query;
+    const faqList = await this.faqService.getFaqList(
+      page,
+      pageSize,
+      keyword,
+      sortBy,
+      orderBy,
+    );
     return faqList;
   }
 
@@ -33,6 +48,7 @@ export class FaqController {
   }
 
   @Post()
+  @UseGuards(AuthGuard('jwt-admin'))
   @UsePipes(CreateFaqValidationPipe)
   async createFaq(@Body() createFaqDto: CreateFaqDto) {
     const adminId = 1; // 권한 작업후 수정 필요
@@ -41,6 +57,7 @@ export class FaqController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt-admin'))
   async updateFaq(
     @Param('id') faqId: number,
     @Body() updateFaqDto: UpdateFaqDto,
@@ -50,6 +67,7 @@ export class FaqController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt-admin'))
   async deleteFaq(@Param('id') faqId: number) {
     const faq = await this.faqService.deleteFaq(faqId);
     return faq;

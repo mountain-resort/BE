@@ -8,9 +8,35 @@ import { Prisma } from '@prisma/client';
 export class FaqService {
   constructor(private readonly faqRepository: FaqRepository) {}
 
-  getFaqList(keyword: string, sortBy: string, orderBy: string) {
+  async getFaqList(
+    page: number,
+    pageSize: number,
+    keyword: string,
+    sortBy: string,
+    orderBy: string,
+  ) {
+    const whereCondition = this.getWhereCondition(keyword);
     const orderByCondition = this.getOrderByCondition(sortBy, orderBy);
-    return this.faqRepository.getFaqList(keyword, orderByCondition);
+
+    const [faqList, totalFaqCount] = await Promise.all([
+      this.faqRepository.getFaqList(
+        page,
+        pageSize,
+        whereCondition,
+        orderByCondition,
+      ),
+      this.faqRepository.getTotalFaqCount(keyword),
+    ]);
+
+    const hasNext = totalFaqCount > page * pageSize;
+    const totalPages = Math.ceil(totalFaqCount / pageSize);
+
+    return {
+      hasNext,
+      totalPages,
+      currentPage: page,
+      list: faqList,
+    };
   }
 
   getFaqById(id: number) {
@@ -27,6 +53,17 @@ export class FaqService {
 
   deleteFaq(id: number) {
     return this.faqRepository.deleteFaq(id);
+  }
+
+  private getWhereCondition(keyword: string) {
+    const whereCondition: Prisma.FaqWhereInput = {};
+    if (keyword) {
+      whereCondition.OR = [
+        { question: { contains: keyword } },
+        { answer: { contains: keyword } },
+      ];
+    }
+    return whereCondition;
   }
 
   private getOrderByCondition(sortBy: string, orderBy: string) {

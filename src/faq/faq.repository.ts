@@ -7,15 +7,28 @@ import { Prisma } from '@prisma/client';
 export class FaqRepository {
   constructor(private readonly prismaClient: PrismaService) {}
 
-  getFaqList(keyword: string, orderBy: Prisma.FaqOrderByWithRelationInput) {
-    return this.prismaClient.faq.findMany({
+  getTotalFaqCount(keyword: string) {
+    return this.prismaClient.faq.count({
       where: {
         OR: [
           { question: { contains: keyword } },
           { answer: { contains: keyword } },
         ],
       },
+    });
+  }
+
+  getFaqList(
+    page: number,
+    pageSize: number,
+    whereCondition: Prisma.FaqWhereInput,
+    orderBy: Prisma.FaqOrderByWithRelationInput,
+  ) {
+    return this.prismaClient.faq.findMany({
+      where: whereCondition,
       orderBy,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
       select: {
         id: true,
         question: true,
