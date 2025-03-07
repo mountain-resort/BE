@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +8,380 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Member {
+  id                Int      @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String   @unique
+  encryptedPassword String
+  mobile            String   @unique
+  refreshToken      String?
+  notes             String? // 고객 추가 정보
+  isOAuth           Boolean  @default(false)
+  loyaltyPoints     Int      @default(20) // 적립 포인트
+  isDeleted         Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  reviews  Review[]
+  bookings Booking[]
+  payments Payment[]
+
+  @@index([isDeleted])
+}
+
+model Admin {
+  id                Int       @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String    @unique
+  encryptedPassword String
+  mobile            String    @unique
+  refreshToken      String?
+  authority         Authority @default(NORMAL)
+  isDeleted         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  categories    Category[]
+  announcements Announcement[]
+  faqs          Faq[]
+
+  @@index([isDeleted])
+}
+
+enum Authority {
+  MANAGER @map("manager")
+  NORMAL  @map("normal")
+}
+
+model Package {
+  id               Int      @id @default(autoincrement())
+  name             String
+  description      String
+  capacity         Int // 수용 인원
+  duration         Int // 숙박 일수
+  pricePerNight    Int
+  startDate        DateTime
+  endDate          DateTime
+  imageUrl         String[]
+  includedServices String[]
+  isDeleted        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  events     Event[]
+  activities Activity[]
+
+  @@index([isDeleted])
+  @@index([pricePerNight])
+  @@index([startDate, endDate])
+}
+
+model Event {
+  id                  Int      @id @default(autoincrement())
+  title               String
+  description         String
+  location            String
+  maxGroupSize        Int // 최대 참여 그룹 수
+  currentParticipants Int      @default(0)
+  startDate           DateTime
+  endDate             DateTime
+  imageUrl            String
+  isDeleted           Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  bookings Booking[]
+  packages Package[]
+
+  @@index([isDeleted])
+  @@index([startDate, endDate])
+}
+
+model Dining {
+  id           Int        @id @default(autoincrement())
+  name         String // 식당명
+  description  String // 식당설명
+  tradingHours String // 영업시간
+  content      String // 식당소개
+  location     String // 식당위치
+  type         DiningType @default(ON_SITE) // 식당유형
+  menuUrl      String // 메뉴 PDF URL
+  imageUrl     String // 식당이미지
+  isDeleted    Boolean    @default(false) // 삭제여부
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum DiningType {
+  ON_SITE  @map("on-site")
+  OFF_SITE @map("off-site")
+}
+
+model Category {
+  id           Int      @id @default(autoincrement())
+  name         String // 카테고리명
+  description  String // 카테고리설명 (카드내부)
+  overview     String // 카테고리 페이지 설명
+  heroImageUrl String // 페이지 메인 이미지
+  imageUrl     String // 카드 메인 이미지
+  createdBy    Admin    @relation(fields: [adminId], references: [id])
+  adminId      Int //생성 관리자
+  isDeleted    Boolean  @default(false) // 삭제여부
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  activities Activity[]
+
+  @@index([isDeleted])
+}
+
+model Activity {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  imageUrl    String
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  bookings   Booking[]
+  packages   Package[]
+
+  @@index([isDeleted])
+  @@index([categoryId])
+}
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  title     String // 공지사항제목
+  content   String // 공지사항내용
+  fileUrl   String? // 첨부파일URL
+  imageUrl  String? // 이미지URL
+  isPinned  Boolean  @default(false) // 상단고정
+  isDeleted Boolean  @default(false) // 삭제여부
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy Admin @relation(fields: [adminId], references: [id])
+  adminId   Int // 생성 관리자
+
+  @@index([isPinned])
+}
+
+model Faq {
+  id        Int      @id @default(autoincrement())
+  question  String // 질문
+  answer    String // 답변
+  isDeleted Boolean  @default(false) // 삭제여부
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy Admin @relation(fields: [adminId], references: [id])
+  adminId   Int // 생성 관리자
+
+  @@index([isDeleted])
+}
+
+// property -> 프론트에서는 accommodation
+model Property {
+  id           Int          @id @default(autoincrement())
+  name         String // 숙소명
+  description  String // 설명 (카드 내부 설명)
+  overview     String // 상세 설명 (각 숙소 페이지 내 설명)
+  propertyType PropertyType @default(CABIN)
+  heroImageUrl String // 페이지 메인 이미지
+  imageUrls    String[] // 숙소 슬라이드 이미지
+  features     String // 옵션
+  isDeleted    Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  reviews   Review[]
+  roomTypes RoomType[]
+
+  @@index([propertyType, isDeleted])
+}
+
+enum PropertyType {
+  CABIN @map("cabin")
+  VILLA @map("villa")
+}
+
+model RoomType {
+  id            Int       @id @default(autoincrement())
+  roomClass     RoomClass @default(STANDARD)
+  totalRooms    Int // 총 객실 수
+  occupancy     Int // 수용 인원
+  size          Int // 객실 크기(m²)
+  bedding       Json // 침대 구성
+  pricePerNight Int // 1박 가격
+
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  property   Property  @relation(fields: [propertyId], references: [id])
+  propertyId Int
+  rooms      Room[]
+  amenities  Amenity[]
+  Booking    Booking[]
+
+  @@unique([propertyId, roomClass]) //한 숙소 내 객실 타입은 중복 불가
+}
+
+enum RoomClass {
+  STANDARD @map("standard")
+  DELUXE   @map("deluxe")
+  LUXURY   @map("luxury")
+  SUITE    @map("suite")
+}
+
+model Room {
+  id         Int        @id @default(autoincrement())
+  roomNumber String
+  status     RoomStatus
+  isDeleted  Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  roomType   RoomType @relation(fields: [roomTypeId], references: [id])
+  roomTypeId Int
+
+  bookings Booking[]
+
+  @@unique([roomTypeId, roomNumber])
+  @@index([status, roomTypeId])
+}
+
+enum RoomStatus {
+  AVAILABLE   @map("available") //이 방 사용가능
+  MAINTENANCE @map("maintenance") //유지보수 공사?뭐 이런 느낌
+}
+
+model Booking {
+  id              Int           @id @default(autoincrement())
+  referenceNumber String        @unique // 예약번호
+  checkInDate     DateTime // 숙박 체크인날
+  checkOutDate    DateTime // 숙박 체크아웃날
+  status          BookingStatus @default(PENDING)
+  name            String // 예약자명
+  email           String
+  priceAtBooking  Int
+  rewardPoints    Int // 예약시 적립될 포인트
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  member     Member    @relation(fields: [memberId], references: [id])
+  memberId   Int
+  payment    Payment?
+  Event      Event?    @relation(fields: [eventId], references: [id])
+  eventId    Int?
+  Activity   Activity? @relation(fields: [activityId], references: [id])
+  activityId Int?
+  room       Room?     @relation(fields: [roomId], references: [id]) // 추가: 예약된 실제 객실들
+  roomId     Int?
+  roomType   RoomType  @relation(fields: [roomTypeId], references: [id])
+  roomTypeId Int
+
+  @@index([checkInDate, checkOutDate, status])
+}
+
+enum BookingStatus {
+  PENDING   @map("pending") // 예약 상태
+  CHECKIN   @map("check-in") // 체크인 
+  CHECKOUT  @map("check-out") // 체크아웃 
+  CANCELLED @map("cancelled") // 취소됨
+}
+
+model Amenity {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String? // 편의시설 설명 추가
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  roomTypes RoomType[]
+
+  @@index([isDeleted])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String
+  title     String?
+  isBest    Boolean  @default(false)
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  member     Member   @relation(fields: [memberId], references: [id])
+  memberId   Int
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId Int
+
+  @@index([rating])
+  @@index([isBest, isDeleted])
+  @@index([propertyId])
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  amount    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  member    Member  @relation(fields: [memberId], references: [id])
+  memberId  Int
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  bookingId Int     @unique
+
+  @@index([memberId])
+}
+
+model Language {
+  id           Int           @id @default(autoincrement())
+  code         String        @unique // 예: 'en', 'ko', 'ja'
+  name         String // 예: 'English', '한국어', '日本語'
+  isActive     Boolean       @default(true)
+  translations Translation[]
+}
+
+model Translation {
+  id         Int        @id @default(autoincrement())
+  entityId   Int // 번역 대상 엔티티 ID
+  entityType EntityType // 엔티티 유형
+  field      String // 번역할 필드명
+  value      String // 번역 텍스트
+
+  language   Language @relation(fields: [languageId], references: [id])
+  languageId Int
+
+  @@unique([entityId, entityType, field, languageId])
+  @@index([entityId, entityType, languageId])
+  @@index([languageId])
+}
+
+enum EntityType {
+  PACKAGE      @map("package")
+  EVENT        @map("event")
+  PROPERTY     @map("property")
+  BOOKING      @map("booking")
+  ACTIVITY     @map("activity")
+  ANNOUNCEMENT @map("announcement")
+  CATEGORY     @map("category")
+  DINING       @map("dining")
+  FAQ          @map("faq")
+  REVIEW       @map("review")
+  ROOM         @map("room")
+  AMENITY      @map("amenity")
+  ADMIN        @map("admin")
+  MEMBER       @map("member")
 }
