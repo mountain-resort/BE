@@ -26,14 +26,14 @@ export class BookingsService {
     status: string,
     startDate: Date,
     endDate: Date,
-    propertyId: number,
+    roomType: number,
   ) {
-    const where = await this.getWhereCondition(
-      status as BookingStatus,
+    const where = await this.getWhereCondition({
+      status: status as BookingStatus,
+      roomType,
       startDate,
       endDate,
-      propertyId,
-    );
+    });
     const [bookingList, totalBookings] = await Promise.all([
       this.bookingsRepository.getBookingList(page, pageSize, where),
       this.bookingsRepository.getTotalBookingCount(where),
@@ -58,12 +58,45 @@ export class BookingsService {
     return this.bookingsRepository.getBookingById(id);
   }
 
+  async getMyBookingList(
+    memberId: number,
+    lastId: number,
+    pageSize: number,
+    isToday: string,
+    sortBy: string,
+    orderBy: string,
+    roomType: number,
+    status: BookingStatus,
+  ) {
+    const orderByCondition = this.getOrderByCondition(sortBy, orderBy);
+    const where = await this.getWhereCondition({
+      status,
+      roomType,
+      isToday,
+    });
+    return this.bookingsRepository.getMyBookingList(
+      memberId,
+      lastId,
+      pageSize,
+      where,
+      orderByCondition,
+    );
+  }
+
   async updateBooking(id: number, updateBookingDto: UpdateBookingDto) {
     return this.bookingsRepository.updateBooking(id, updateBookingDto);
   }
 
   async removeBooking(id: number) {
     return this.bookingsRepository.removeBooking(id);
+  }
+
+  async checkInBooking(id: number, roomId: number) {
+    return this.bookingsRepository.checkInBooking(id, roomId);
+  }
+
+  async checkOutBooking(id: number) {
+    return this.bookingsRepository.checkOutBooking(id);
   }
 
   // 예약 번호 생성
@@ -89,22 +122,46 @@ export class BookingsService {
     return referenceNumber;
   }
 
-  private async getWhereCondition(
-    status: BookingStatus,
-    startDate: Date,
-    endDate: Date,
-    propertyId: number,
-  ) {
-    const where: Prisma.BookingWhereInput = {
-      status,
-      checkInDate: {
+  private async getWhereCondition({
+    status,
+    roomType,
+    startDate,
+    endDate,
+    isToday,
+  }: {
+    status: BookingStatus;
+    roomType: number;
+    startDate?: Date;
+    endDate?: Date;
+    isToday?: string;
+  }) {
+    const where: Prisma.BookingWhereInput = {};
+    if (status) {
+      where.status = status;
+    }
+    if (startDate && endDate) {
+      where.checkInDate = {
         gte: startDate,
         lte: endDate,
-      },
-      roomType: {
-        propertyId,
-      },
-    };
+      };
+    }
+    if (isToday) {
+      where.checkInDate = {
+        equals: new Date(),
+      };
+    }
+    if (roomType) {
+      where.roomType = {
+        id: roomType,
+      };
+    }
     return where;
+  }
+
+  private getOrderByCondition(sortBy: string, orderBy: string) {
+    const orderByCondition: Prisma.BookingOrderByWithRelationInput = {
+      [sortBy]: orderBy,
+    };
+    return orderByCondition;
   }
 }

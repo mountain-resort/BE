@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma-client';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, BookingStatus } from '@prisma/client';
 @Injectable()
 export class BookingsRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -120,6 +120,54 @@ export class BookingsRepository {
     });
   }
 
+  getMyBookingList(
+    memberId: number,
+    lastId: number,
+    pageSize: number,
+    where: Prisma.BookingWhereInput,
+    orderBy: Prisma.BookingOrderByWithRelationInput,
+  ) {
+    return this.prisma.booking.findMany({
+      where: {
+        ...where,
+        memberId,
+      },
+      skip: lastId ? lastId + 1 : 0,
+      take: pageSize,
+      orderBy: {
+        ...orderBy,
+        id: 'desc',
+      },
+      select: {
+        id: true,
+        referenceNumber: true,
+        checkInDate: true,
+        checkOutDate: true,
+        status: true,
+        name: true,
+        email: true,
+        priceAtBooking: true,
+        rewardPoints: true,
+        roomType: {
+          select: {
+            id: true,
+            roomClass: true,
+            totalRooms: true,
+            occupancy: true,
+            size: true,
+            bedding: true,
+            amenities: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   updateBooking(id: number, updateBookingDto: UpdateBookingDto) {
     return this.prisma.booking.update({
       where: { id },
@@ -184,6 +232,23 @@ export class BookingsRepository {
           },
         },
       },
+    });
+  }
+
+  checkInBooking(id: number, roomId: number) {
+    return this.prisma.booking.update({
+      where: { id },
+      data: {
+        roomId,
+        status: BookingStatus.CHECKIN,
+      },
+    });
+  }
+
+  checkOutBooking(id: number) {
+    return this.prisma.booking.update({
+      where: { id },
+      data: { status: BookingStatus.CHECKOUT },
     });
   }
 }

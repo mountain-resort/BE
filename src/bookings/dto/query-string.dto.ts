@@ -1,5 +1,11 @@
 import { DefaultQueryStringDto } from 'src/common/dto/default-query-string.dto';
-import { IsOptional, IsEnum, IsDate, IsNumber } from 'class-validator';
+import {
+  IsOptional,
+  IsEnum,
+  IsDate,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { BookingStatus } from '@prisma/client';
 export class QueryStringDto extends DefaultQueryStringDto {
@@ -18,5 +24,9 @@ export class QueryStringDto extends DefaultQueryStringDto {
   @IsOptional()
   @IsNumber()
   @Transform(({ value }) => Number(value))
-  propertyId: number;
+  roomType: number;
+
+  @IsOptional()
+  @IsString()
+  isToday: string;
 }

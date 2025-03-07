@@ -33,15 +33,51 @@ export class BookingsController {
   @Get()
   @UseGuards(AuthGuard('jwt-admin'))
   getBookingList(@Query() query: QueryStringDto) {
-    const { page, pageSize, status, startDate, endDate, propertyId } = query;
+    const { page, pageSize, status, startDate, endDate, roomType } = query;
     return this.bookingsService.getBookingList(
       page,
       pageSize,
       status,
       startDate,
       endDate,
-      propertyId,
+      roomType,
     );
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard('jwt'))
+  getMyBookingList(
+    @Query() query: QueryStringDto,
+    @User() user: TokenPayloadDto,
+  ) {
+    const memberId = user.id;
+    const {
+      lastId = null,
+      pageSize = 10,
+      isToday,
+      sortBy = 'createdAt',
+      orderBy = 'desc',
+      roomType,
+      status,
+    } = query;
+    return this.bookingsService.getMyBookingList(
+      memberId,
+      lastId,
+      pageSize,
+      isToday,
+      sortBy,
+      orderBy,
+      roomType,
+      status,
+    );
+  }
+
+  @Get(':referenceNumber')
+  @UseGuards(AuthGuard('jwt'))
+  getBookingByReferenceNumber(
+    @Param('referenceNumber') referenceNumber: string,
+  ) {
+    return this.bookingsService.getBookingByReferenceNumber(referenceNumber);
   }
 
   @Get(':id')
@@ -63,5 +99,21 @@ export class BookingsController {
   @UseGuards(AuthGuard('jwt-admin'))
   removeBooking(@Param('id') bookingId: number) {
     return this.bookingsService.removeBooking(bookingId);
+  }
+
+  @Post(':id/check-in')
+  @UseGuards(AuthGuard('jwt-admin'))
+  checkInBooking(
+    @Param('id') bookingId: number,
+    @Body() body: { roomId: number },
+  ) {
+    const { roomId } = body;
+    return this.bookingsService.checkInBooking(bookingId, roomId);
+  }
+
+  @Delete(':id/check-out')
+  @UseGuards(AuthGuard('jwt-admin'))
+  checkOutBooking(@Param('id') bookingId: number) {
+    return this.bookingsService.checkOutBooking(bookingId);
   }
 }
