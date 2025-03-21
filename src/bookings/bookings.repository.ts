@@ -122,7 +122,7 @@ export class BookingsRepository {
 
   getMyBookingList(
     memberId: number,
-    lastId: number,
+    cursor: number,
     pageSize: number,
     where: Prisma.BookingWhereInput,
     orderBy: Prisma.BookingOrderByWithRelationInput,
@@ -132,7 +132,7 @@ export class BookingsRepository {
         ...where,
         memberId,
       },
-      skip: lastId ? lastId + 1 : 0,
+      skip: cursor ? cursor + 1 : 0,
       take: pageSize,
       orderBy: {
         ...orderBy,

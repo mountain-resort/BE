@@ -52,7 +52,7 @@ export class BookingsController {
   ) {
     const memberId = user.id;
     const {
-      lastId = null,
+      cursor = null,
       pageSize = 10,
       isToday,
       sortBy = 'createdAt',
@@ -62,7 +62,7 @@ export class BookingsController {
     } = query;
     return this.bookingsService.getMyBookingList(
       memberId,
-      lastId,
+      cursor,
       pageSize,
       isToday,
       sortBy,

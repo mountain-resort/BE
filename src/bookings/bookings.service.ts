@@ -60,7 +60,7 @@ export class BookingsService {
 
   async getMyBookingList(
     memberId: number,
-    lastId: number,
+    cursor: number,
     pageSize: number,
     isToday: string,
     sortBy: string,
@@ -76,7 +76,7 @@ export class BookingsService {
     });
     return this.bookingsRepository.getMyBookingList(
       memberId,
-      lastId,
+      cursor,
       pageSize,
       where,
       orderByCondition,
