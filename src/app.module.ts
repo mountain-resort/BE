@@ -12,6 +12,7 @@ import { ActivitiesModule } from './activities/activities.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { DiningModule } from './dining/dining.module';
 import { AnnouncementsModule } from './announcements/announcements.module';
+import { BookingsModule } from './bookings/bookings.module';
 import { CategoriesModule } from './categories/categories.module';
 
 @Module({
@@ -29,6 +30,7 @@ import { CategoriesModule } from './categories/categories.module';
     ReviewsModule,
     DiningModule,
     AnnouncementsModule,
+    BookingsModule,
     CategoriesModule,
   ],
   controllers: [AppController],
